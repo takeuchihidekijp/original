@@ -71,6 +71,7 @@ public class GameScreen extends ScreenAdapter {
         mGuiViewPort = new FitViewport(GUI_WIDTH, GUI_HEIGHT, mGuiCamera);
 
         mTouchPoint = new Vector3();
+        beginTouchPoint = new Vector3();
 
         createStage();
 
