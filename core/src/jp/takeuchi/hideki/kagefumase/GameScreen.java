@@ -47,7 +47,8 @@ public class GameScreen extends ScreenAdapter {
 
     int mGameState;
 
-    Vector3 mTouchPoint; //タッチされた座標を保持するメンバ変数
+    Vector3 mTouchPoint; //継続してタッチされた座標を保持するメンバ変数
+    Vector3 beginTouchPoint; //最初にタッチされた座標を保持するメンバ変数
 
 
     public GameScreen(Kagefumase game){
@@ -143,24 +144,35 @@ public class GameScreen extends ScreenAdapter {
     }
 
     private void updatePlaying(float delta){
+
+        if (Gdx.input.justTouched()){
+            // 始点を保持
+            mGuiViewPort.unproject(beginTouchPoint.set(Gdx.input.getX(), Gdx.input.getY(), 0));
+        }
+
         if (Gdx.input.isTouched()) {
             mGuiViewPort.unproject(mTouchPoint.set(Gdx.input.getX(), Gdx.input.getY(), 0));
-            Rectangle left = new Rectangle(0, GUI_HEIGHT /3, GUI_WIDTH / 2, GUI_HEIGHT3);
-            Rectangle right = new Rectangle(GUI_WIDTH / 2, GUI_HEIGHT /3, GUI_WIDTH / 2, GUI_HEIGHT3);
-            Rectangle upper = new Rectangle(0,GUI_HEIGHT - GUI_HEIGHT3,GUI_WIDTH, GUI_HEIGHT /3);
-            Rectangle lower = new Rectangle(0,0,GUI_WIDTH,GUI_HEIGHT /3);
-            if (left.contains(mTouchPoint.x, mTouchPoint.y)) {
-                left();
+
+            if( (mTouchPoint != null) && (beginTouchPoint != null) ) {
+
+                Vector3 diff = mTouchPoint.sub(beginTouchPoint);
+
+                if (Math.abs(diff.x) > Math.abs(diff.y)) {
+
+                    if (diff.x > 10) {
+                        right();
+                    } else if (diff.x < -10) {
+                        left();
+                    }
+                } else {
+                    if (diff.y > 10) {
+                        upper();
+                    } else {
+                        lower();
+                    }
+                }
             }
-            if (right.contains(mTouchPoint.x, mTouchPoint.y)) {
-                right();
-            }
-            if (upper.contains(mTouchPoint.x,mTouchPoint.y)){
-                upper();
-            }
-            if (lower.contains(mTouchPoint.x,mTouchPoint.y)){
-                lower();
-            }
+
         }
 
         // Player
