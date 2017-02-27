@@ -12,6 +12,13 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
+import static jp.takeuchi.hideki.kagefumase.Enemy.ENEMY_TYPE_CAUGHT;
+
+
 /**
  * Created by OWNER on 2017/02/22.
  */
@@ -43,6 +50,8 @@ public class GameScreen extends ScreenAdapter {
     FitViewport mViewPort;
     FitViewport mGuiViewPort;
 
+    Random mRandom;
+    List<Enemy> mEnemys;
     Player mPlayer;
 
     int mGameState;
@@ -69,6 +78,10 @@ public class GameScreen extends ScreenAdapter {
         mGuiCamera = new OrthographicCamera();
         mGuiCamera.setToOrtho(false, GUI_WIDTH, GUI_HEIGHT);
         mGuiViewPort = new FitViewport(GUI_WIDTH, GUI_HEIGHT, mGuiCamera);
+
+        // メンバ変数の初期化
+        mRandom = new Random();
+        mEnemys = new ArrayList<Enemy>();
 
         mTouchPoint = new Vector3();
         beginTouchPoint = new Vector3();
@@ -101,6 +114,11 @@ public class GameScreen extends ScreenAdapter {
         mBg.setPosition(mCamera.position.x - CAMERA_WIDTH / 2, mCamera.position.y - CAMERA_HEIGHT / 2);
         mBg.draw(mGame.batch);
 
+        // Enemy
+        for (int i=0; i < mEnemys.size(); i++){
+            mEnemys.get(i).draw(mGame.batch);
+        }
+
         //Player
         mPlayer.draw(mGame.batch);
 
@@ -117,10 +135,29 @@ public class GameScreen extends ScreenAdapter {
     private void createStage(){
         // TODO Playerの画像の用意とアニメーション検討 テクスチャの準備
         Texture playerTexture = new Texture("uma.png");
+        Texture enemysTexture = new Texture("enemy.png");
+
 
         // TODO 初期の位置を考える( WORLD_HEIGHT /2は仮)　Playerを配置
         mPlayer = new Player(playerTexture, 0, 0, 72, 72);
-        mPlayer.setPosition(WORLD_WIDTH / 2 - mPlayer.getWidth() / 2, WORLD_HEIGHT /2);
+  //      mPlayer.setPosition(WORLD_WIDTH / 2 - mPlayer.getWidth() / 2, WORLD_HEIGHT /2);
+        mPlayer.setPosition(WORLD_WIDTH / 2 - mPlayer.getWidth() / 2, 5.0f);
+
+        // TODO Enemyをゴールの高さまで配置していく(配置ロジック検討)
+        float y = 0;
+        while ( y < WORLD_HEIGHT -5 ){
+            float x = mRandom.nextFloat() * (WORLD_WIDTH - Enemy.ENEMY_WIDTH);
+
+            if (mRandom.nextFloat() > 0.5f){
+                Enemy enemy = new Enemy(enemysTexture, 0, 0, 120, 74);
+                //敵はPlayerより上に配置
+                enemy.setPosition(x, y + mPlayer.getY());
+                mEnemys.add(enemy);
+            }
+
+            y++;
+        }
+
     }
 
     // それぞれのオブジェクトの状態をアップデートする
@@ -176,8 +213,22 @@ public class GameScreen extends ScreenAdapter {
 
         }
 
+        //Enemy
+        for (int i =0; i < mEnemys.size(); i++){
+        mEnemys.get(i).update(delta);
+            if (mEnemys.get(i).mState == ENEMY_TYPE_CAUGHT ){
+                //捕まった際の動き
+
+            }
+         }
+
+
         // Player
         mPlayer.update(delta);
+
+        // 当たり判定を行う
+        checkCollision();
+
     }
 
     private void updateGameOver() {
@@ -200,6 +251,24 @@ public class GameScreen extends ScreenAdapter {
 
     private void lower(){
         mPlayer.setPosition(mPlayer.getX(),mPlayer.getY()-0.1f);
+
+    }
+
+    private void checkCollision(){
+
+        //Enemyとの当たり判定)
+        for (int i = 0; i < mEnemys.size(); i++){
+            Enemy enemy = mEnemys.get(i);
+
+            if (enemy.mState == ENEMY_TYPE_CAUGHT){
+                continue;
+            }
+
+            if (mPlayer.getBoundingRectangle().overlaps(enemy.getBoundingRectangle())){
+                enemy.chatched();
+                break;
+            }
+        }
 
     }
 
