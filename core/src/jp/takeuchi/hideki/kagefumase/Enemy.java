@@ -59,7 +59,7 @@ public class Enemy extends GameObject{
             }
 
         //    if ((velocity.dst(player.getposition(), getY())) < 1.0f) {
-      //          setY(getY()+velocity.y*deltaTime);
+                setY(getY()+velocity.y*deltaTime);
       //      }
 
 
