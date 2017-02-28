@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import static jp.takeuchi.hideki.kagefumase.Enemy.ENEMY_TYPE_CAUGHT;
 
 
 /**
@@ -215,11 +214,7 @@ public class GameScreen extends ScreenAdapter {
 
         //Enemy
         for (int i =0; i < mEnemys.size(); i++){
-        mEnemys.get(i).update(delta);
-            if (mEnemys.get(i).mState == ENEMY_TYPE_CAUGHT ){
-                //捕まった際の動き
-
-            }
+            mEnemys.get(i).update(delta);
          }
 
 
@@ -260,7 +255,7 @@ public class GameScreen extends ScreenAdapter {
         for (int i = 0; i < mEnemys.size(); i++){
             Enemy enemy = mEnemys.get(i);
 
-            if (enemy.mState == ENEMY_TYPE_CAUGHT){
+            if (enemy.mState == Enemy.ENEMY_TYPE_CAUGHT){
                 continue;
             }
 
