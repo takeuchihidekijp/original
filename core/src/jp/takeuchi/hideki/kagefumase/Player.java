@@ -39,7 +39,4 @@ public class Player extends GameObject{
         }
     }
 
-    public float getposition(){
-        return getX();
-    }
 }

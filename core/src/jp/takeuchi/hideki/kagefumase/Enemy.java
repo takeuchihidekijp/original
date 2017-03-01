@@ -26,7 +26,6 @@ public class Enemy extends GameObject{
     int mState;
     Random mRandom;
 
-    Player player;
 
 
 
@@ -44,27 +43,25 @@ public class Enemy extends GameObject{
 
     // TODO
     public void update(float deltaTime){
-        if (mState == ENEMY_TYPE_MOVING){
+        if (mState == ENEMY_TYPE_MOVING) {
             //TODO キャラを動かして逃げる処理
-            setX(getX()+velocity.x*deltaTime);
+            setX(getX() + velocity.x * deltaTime);
 
-            if (getX() < ENEMY_WIDTH /2){
+            if (getX() < ENEMY_WIDTH / 2) {
                 velocity.x = -velocity.x;
-                setX(ENEMY_WIDTH/2);
+                setX(ENEMY_WIDTH / 2);
             }
 
-            if (getX() > GameScreen.WORLD_WIDTH - ENEMY_WIDTH /2){
-                velocity.x = - velocity.x;
-                setX(GameScreen.WORLD_WIDTH - ENEMY_WIDTH /2);
+            if (getX() > GameScreen.WORLD_WIDTH - ENEMY_WIDTH / 2) {
+                velocity.x = -velocity.x;
+                setX(GameScreen.WORLD_WIDTH - ENEMY_WIDTH / 2);
             }
 
-        //    if ((velocity.dst(player.getposition(), getY())) < 1.0f) {
-                setY(getY()+velocity.y*deltaTime);
-      //      }
-
+            if (mRandom.nextFloat() > 0.5f) {
+                setY(getY() + velocity.y * deltaTime);
+            }
 
         }
-
     }
 
     // TODO
