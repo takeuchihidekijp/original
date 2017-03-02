@@ -114,12 +114,14 @@ public class GameScreen extends ScreenAdapter {
         mBg.draw(mGame.batch);
 
         // Enemy
+        //ｚは捕まえた敵の数を保持して後続の描画で後ろにつなげる際に利用
         int z = 1;
         for (int i=0; i < mEnemys.size(); i++){
             //20170301
             if ( mEnemys.get(i).mState == Enemy.ENEMY_TYPE_MOVING){
                 mEnemys.get(i).draw(mGame.batch);
             }else {
+                //捕まった敵をX軸はプレイヤーと一緒。Y軸はプレイヤーの位置から捕まえた敵の数分引いていく
                 mEnemys.get(i).setPosition(mPlayer.getX(), mPlayer.getY() - mEnemys.get(i).getHeight()*z);
                 mEnemys.get(i).draw(mGame.batch);
                 z++;
