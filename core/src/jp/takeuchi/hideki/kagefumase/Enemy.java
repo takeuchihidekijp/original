@@ -68,6 +68,6 @@ public class Enemy extends GameObject{
     public void chatched(){
 
         mState = ENEMY_TYPE_CAUGHT;
-        setAlpha(0);
+    //    setAlpha(0);
     }
 }

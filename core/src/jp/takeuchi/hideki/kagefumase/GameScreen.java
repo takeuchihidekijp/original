@@ -114,13 +114,15 @@ public class GameScreen extends ScreenAdapter {
         mBg.draw(mGame.batch);
 
         // Enemy
+        int z = 1;
         for (int i=0; i < mEnemys.size(); i++){
             //20170301
             if ( mEnemys.get(i).mState == Enemy.ENEMY_TYPE_MOVING){
                 mEnemys.get(i).draw(mGame.batch);
             }else {
-                mEnemys.get(i).setPosition(mPlayer.getX(), mPlayer.getY() - mEnemys.get(i).getHeight());
+                mEnemys.get(i).setPosition(mPlayer.getX(), mPlayer.getY() - mEnemys.get(i).getHeight()*z);
                 mEnemys.get(i).draw(mGame.batch);
+                z++;
             }
 
         }
