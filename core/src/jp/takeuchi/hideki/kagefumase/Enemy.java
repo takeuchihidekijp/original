@@ -92,6 +92,7 @@ public class Enemy extends GameObject{
                         setY(getY() + velocity.y * deltaTime);
                     }
                     break;
+
                 case ENEMY_MOVING_TYPE_LEFT:
                     setX(getX() - velocity.x * deltaTime*2);
 
@@ -108,6 +109,10 @@ public class Enemy extends GameObject{
                     if (mRandom.nextFloat() > 0.6f) {
                         setY(getY() + velocity.y * deltaTime);
                     }
+                    break;
+
+                case ENEMY_MOVING_TYPE_LOWER:
+                    setY(getY() - velocity.y* deltaTime);
                     break;
             }
 

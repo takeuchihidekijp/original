@@ -19,7 +19,7 @@ android {
     }
     defaultConfig {
         applicationId "jp.takeuchi.hideki.kagefumase"
-        minSdkVersion 8
+        minSdkVersion 9
         targetSdkVersion 25
     }
 }
@@ -126,4 +126,8 @@ idea {
             }
         }
     }
+}
+// 下記、追加する
+dependencies {
+    compile 'com.google.android.gms:play-services:6.+'
 }

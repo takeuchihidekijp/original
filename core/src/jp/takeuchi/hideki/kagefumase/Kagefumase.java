@@ -9,7 +9,12 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class Kagefumase extends Game {
 	public SpriteBatch batch;
-	Texture img;
+	public ActivityRequestHandler mRequestHandler;
+
+	public Kagefumase(ActivityRequestHandler requestHandler) {
+		super();
+		mRequestHandler = requestHandler;
+	}
 	
 	@Override
 	public void create () {

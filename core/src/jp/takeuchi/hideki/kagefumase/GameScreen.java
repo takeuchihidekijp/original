@@ -31,7 +31,7 @@ public class GameScreen extends ScreenAdapter {
 
     static final float WORLD_WIDTH = 10;
 //    static final float WORLD_HEIGHT = 15 * 20; // 20画面分登れば終了
-    static final float WORLD_HEIGHT = 15 * 1; // TEST 5画面分登れば終了
+    static final float WORLD_HEIGHT = 15 * 5; // TEST 5画面分登れば終了
 
     static final int GAME_STATE_READY = 0;
     static final int GAME_STATE_PLAYING = 1;
@@ -209,10 +209,10 @@ public class GameScreen extends ScreenAdapter {
 
         // TODO Enemyをゴールの高さまで配置していく(配置ロジック検討)
         float y = 0;
-        while ( y < WORLD_HEIGHT -5 ){
+        while ( y < WORLD_HEIGHT -10 ){
             float x = mRandom.nextFloat() * (WORLD_WIDTH - Enemy.ENEMY_WIDTH);
 
-            if (mRandom.nextFloat() > 0.5f){
+            if (mRandom.nextFloat() > 0.8f){
                 Enemy enemy = new Enemy(Enemy.ENEMY_MOVING_TYPE_NORMAL,enemysTexture, 0, 0, 120, 74);
                 //敵はPlayerより上に配置
                 enemy.setPosition(x, y + mPlayer.getY());
@@ -292,6 +292,10 @@ public class GameScreen extends ScreenAdapter {
                 }else{
                     mEnemys.get(i).mType = mEnemys.get(i).ENEMY_MOVING_TYPE_RIGHT;
                 }
+            }
+
+            if (mEnemys.get(i).getY() > WORLD_HEIGHT - 10) {
+                mEnemys.get(i).mType = mEnemys.get(i).ENEMY_MOVING_TYPE_LOWER;
             }
 
             mEnemys.get(i).update(delta);
