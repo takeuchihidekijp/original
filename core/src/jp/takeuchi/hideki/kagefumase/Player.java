@@ -21,10 +21,15 @@ public class Player extends GameObject{
     // 速度
     public static final float PLAYER_MOVE_VELOCITY = 20.0f;
 
+    int mType;
 
-    public Player(Texture texture, int srcX, int srcY, int srcWidth, int srcHeight) {
+  //  public Player(Texture texture, int srcX, int srcY, int srcWidth, int srcHeight) {
+    public Player(int type,Texture texture, int srcX, int srcY, int srcWidth, int srcHeight) {
         super(texture, srcX, srcY, srcWidth, srcHeight);
         setSize(PLAYER_WIDTH, PLAYER_HEIGHT);
+
+        mType = type;
+
     }
 
     public void update (float delta){

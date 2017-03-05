@@ -1,11 +1,13 @@
 package jp.takeuchi.hideki.kagefumase;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
@@ -28,7 +30,8 @@ public class GameScreen extends ScreenAdapter {
     static final float CAMERA_HEIGHT = 15;
 
     static final float WORLD_WIDTH = 10;
-    static final float WORLD_HEIGHT = 15 * 20; // 20画面分登れば終了
+//    static final float WORLD_HEIGHT = 15 * 20; // 20画面分登れば終了
+    static final float WORLD_HEIGHT = 15 * 1; // TEST 5画面分登れば終了
 
     static final int GAME_STATE_READY = 0;
     static final int GAME_STATE_PLAYING = 1;
@@ -52,11 +55,20 @@ public class GameScreen extends ScreenAdapter {
     Random mRandom;
     List<Enemy> mEnemys;
     Player mPlayer;
+    School mSchool;
 
     int mGameState;
 
     Vector3 mTouchPoint; //継続してタッチされた座標を保持するメンバ変数
     Vector3 beginTouchPoint; //最初にタッチされた座標を保持するメンバ変数
+
+    Vector3 mStatePoint; //各オブジェクトの位置情報を計算するメンバ変数
+
+    BitmapFont mFont;
+    int mScore;
+    int mHighScore;
+
+    Preferences mPrefs; // ←追加する
 
 
     public GameScreen(Kagefumase game){
@@ -84,6 +96,17 @@ public class GameScreen extends ScreenAdapter {
 
         mTouchPoint = new Vector3();
         beginTouchPoint = new Vector3();
+
+        mStatePoint = new Vector3();
+
+        mFont = new BitmapFont(Gdx.files.internal("font.fnt"), Gdx.files.internal("font.png"), false);
+        mFont.getData().setScale(0.8f);
+        mScore = 0;
+        mHighScore = 0;
+
+        // ハイスコアをPreferencesから取得する
+        mPrefs = Gdx.app.getPreferences("jp.techacademy.hideki.takeuchi.kagefumase"); // ←追加する
+        mHighScore = mPrefs.getInteger("HIGHSCORE", 0); // ←追加する
 
         createStage();
 
@@ -121,10 +144,28 @@ public class GameScreen extends ScreenAdapter {
             if ( mEnemys.get(i).mState == Enemy.ENEMY_TYPE_MOVING){
                 mEnemys.get(i).draw(mGame.batch);
             }else {
-                //捕まった敵をX軸はプレイヤーと一緒。Y軸はプレイヤーの位置から捕まえた敵の数分引いていく
-                mEnemys.get(i).setPosition(mPlayer.getX(), mPlayer.getY() - mEnemys.get(i).getHeight()*z);
-                mEnemys.get(i).draw(mGame.batch);
-                z++;
+                if (mPlayer.mType == mPlayer.PLAYER_STATE_UPPER) {
+                    //プレイヤーの向きが上向き
+                    //捕まった敵をX軸はプレイヤーと一緒。Y軸はプレイヤーの位置から捕まえた敵の数分引いていく
+                    mEnemys.get(i).setPosition(mPlayer.getX(), mPlayer.getY() - mEnemys.get(i).getHeight() * z);
+                    mEnemys.get(i).draw(mGame.batch);
+                    z++;
+                }else if (mPlayer.mType == mPlayer.PLAYER_STATE_LOWER){
+                    //プレイヤーの向きが下向き
+                    mEnemys.get(i).setPosition(mPlayer.getX(), mPlayer.getY() + mEnemys.get(i).getHeight() *z);
+                    mEnemys.get(i).draw(mGame.batch);
+                    z++;
+                }else if (mPlayer.mType == mPlayer.PLAYER_STATE_RIGHT){
+                    //プレイヤーの向きが右向き
+                    mEnemys.get(i).setPosition(mPlayer.getX() - mEnemys.get(i).getWidth() *z, mPlayer.getY());
+                    mEnemys.get(i).draw(mGame.batch);
+                    z++;
+                }else if (mPlayer.mType == mPlayer.PLAYER_STATE_LEFT){
+                    //プレイヤーの向きが左向き
+                    mEnemys.get(i).setPosition(mPlayer.getX() + mEnemys.get(i).getWidth() *z, mPlayer.getY());
+                    mEnemys.get(i).draw(mGame.batch);
+                    z++;
+                }
             }
 
         }
@@ -132,7 +173,19 @@ public class GameScreen extends ScreenAdapter {
         //Player
         mPlayer.draw(mGame.batch);
 
+        //School
+        mSchool.draw(mGame.batch);
+
         mGame.batch.end();
+
+        // スコア表示
+        mGuiCamera.update(); // ←追加する
+        mGame.batch.setProjectionMatrix(mGuiCamera.combined); // ←追加する
+        mGame.batch.begin(); // ←追加する
+        mFont.draw(mGame.batch, "HighScore: " + mHighScore, 16, GUI_HEIGHT - 15); // ←追加する
+        mFont.draw(mGame.batch, "Score: " + mScore, 16, GUI_HEIGHT - 35); // ←追加する
+        mGame.batch.end(); // ←追加する
+
     }
 
     @Override
@@ -146,10 +199,11 @@ public class GameScreen extends ScreenAdapter {
         // TODO Playerの画像の用意とアニメーション検討 テクスチャの準備
         Texture playerTexture = new Texture("uma.png");
         Texture enemysTexture = new Texture("enemy.png");
+        Texture schoolTexture = new Texture("school.png");
 
 
         // TODO 初期の位置を考える( WORLD_HEIGHT /2は仮)　Playerを配置
-        mPlayer = new Player(playerTexture, 0, 0, 72, 72);
+        mPlayer = new Player(Player.PLAYER_STATE_UPPER, playerTexture, 0, 0, 72, 72);
   //      mPlayer.setPosition(WORLD_WIDTH / 2 - mPlayer.getWidth() / 2, WORLD_HEIGHT /2);
         mPlayer.setPosition(WORLD_WIDTH / 2 - mPlayer.getWidth() / 2, 5.0f);
 
@@ -159,7 +213,7 @@ public class GameScreen extends ScreenAdapter {
             float x = mRandom.nextFloat() * (WORLD_WIDTH - Enemy.ENEMY_WIDTH);
 
             if (mRandom.nextFloat() > 0.5f){
-                Enemy enemy = new Enemy(enemysTexture, 0, 0, 120, 74);
+                Enemy enemy = new Enemy(Enemy.ENEMY_MOVING_TYPE_NORMAL,enemysTexture, 0, 0, 120, 74);
                 //敵はPlayerより上に配置
                 enemy.setPosition(x, y + mPlayer.getY());
                 mEnemys.add(enemy);
@@ -167,6 +221,10 @@ public class GameScreen extends ScreenAdapter {
 
             y++;
         }
+
+        // ゴールの配置
+        mSchool = new School(schoolTexture, 0, 0, 120, 74);
+        mSchool.setPosition(WORLD_WIDTH / 2 - School.SCHOOL_WIDTH / 2, y);
 
     }
 
@@ -225,12 +283,18 @@ public class GameScreen extends ScreenAdapter {
 
         //Enemy
         for (int i =0; i < mEnemys.size(); i++){
-            mEnemys.get(i).update(delta);
-//20170301
-            if ( mEnemys.get(i).mState == Enemy.ENEMY_TYPE_CAUGHT){
-                mEnemys.get(i).setPosition(mPlayer.getX(), mPlayer.getY() - mEnemys.get(i).getHeight());
+
+            if (mStatePoint.dst(mPlayer.getY(),mEnemys.get(i).getY(),0 )  > 2.5f){
+                mEnemys.get(i).mType = mEnemys.get(i).ENEMY_MOVING_TYPE_NORMAL;
+            }else{
+                if (mStatePoint.dst(mPlayer.getX(),mEnemys.get(i).getX(),0 )  > 1.5f) {
+                    mEnemys.get(i).mType = mEnemys.get(i).ENEMY_MOVING_TYPE_LEFT;
+                }else{
+                    mEnemys.get(i).mType = mEnemys.get(i).ENEMY_MOVING_TYPE_RIGHT;
+                }
             }
 
+            mEnemys.get(i).update(delta);
 
          }
 
@@ -241,32 +305,50 @@ public class GameScreen extends ScreenAdapter {
         // 当たり判定を行う
         checkCollision();
 
+        // ゲームオーバーか判断する
+        checkGameOver();
+
+    }
+    private void checkGameOver(){
+
     }
 
     private void updateGameOver() {
+        if (Gdx.input.justTouched()) {
+            mGame.setScreen(new ResultScreen(mGame, mScore));
+        }
 
     }
 
     private void left(){
+        mPlayer.mType = mPlayer.PLAYER_STATE_LEFT;
         mPlayer.setPosition(mPlayer.getX()-0.1f,mPlayer.getY());
 
     }
     private void right(){
+        mPlayer.mType = mPlayer.PLAYER_STATE_RIGHT;
         mPlayer.setPosition(mPlayer.getX()+0.1f,mPlayer.getY());
 
     }
 
     private void upper(){
+        mPlayer.mType = mPlayer.PLAYER_STATE_UPPER;
         mPlayer.setPosition(mPlayer.getX(),mPlayer.getY()+0.1f);
 
     }
 
     private void lower(){
+        mPlayer.mType = mPlayer.PLAYER_STATE_LOWER;
         mPlayer.setPosition(mPlayer.getX(),mPlayer.getY()-0.1f);
 
     }
 
     private void checkCollision(){
+        // SCHOOL(ゴールとの当たり判定)
+        if (mPlayer.getBoundingRectangle().overlaps(mSchool.getBoundingRectangle())) {
+            mGameState = GAME_STATE_GAMEOVER;
+            return;
+        }
 
         //Enemyとの当たり判定)
         for (int i = 0; i < mEnemys.size(); i++){
@@ -278,6 +360,13 @@ public class GameScreen extends ScreenAdapter {
 
             if (mPlayer.getBoundingRectangle().overlaps(enemy.getBoundingRectangle())){
                 enemy.chatched();
+                mScore++; // ←追加する
+                if (mScore > mHighScore) { // ←追加する
+                    mHighScore = mScore; // ←追加する
+                    //ハイスコアをPreferenceに保存する
+                    mPrefs.putInteger("HIGHSCORE", mHighScore); // ←追加する
+                    mPrefs.flush(); // ←追加する
+                } // ←追加する
                 break;
             }
         }
