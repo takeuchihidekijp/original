@@ -112,7 +112,8 @@ public class Enemy extends GameObject{
                     break;
 
                 case ENEMY_MOVING_TYPE_LOWER:
-                    setY(getY() - velocity.y* deltaTime);
+                    velocity.y = -velocity.y;
+                    setY(GameScreen.WORLD_HEIGHT -10 - velocity.y * deltaTime);
                     break;
             }
 

@@ -54,6 +54,7 @@ public class GameScreen extends ScreenAdapter {
 
     Random mRandom;
     List<Enemy> mEnemys;
+    List<Car> mCars;
     Player mPlayer;
     School mSchool;
 
@@ -93,6 +94,7 @@ public class GameScreen extends ScreenAdapter {
         // メンバ変数の初期化
         mRandom = new Random();
         mEnemys = new ArrayList<Enemy>();
+        mCars = new ArrayList<Car>();
 
         mTouchPoint = new Vector3();
         beginTouchPoint = new Vector3();
@@ -135,6 +137,12 @@ public class GameScreen extends ScreenAdapter {
         // 原点は左下
         mBg.setPosition(mCamera.position.x - CAMERA_WIDTH / 2, mCamera.position.y - CAMERA_HEIGHT / 2);
         mBg.draw(mGame.batch);
+
+        // Car
+        for (int i=0; i < mCars.size(); i++){
+            mCars.get(i).draw(mGame.batch);
+        }
+
 
         // Enemy
         //ｚは捕まえた敵の数を保持して後続の描画で後ろにつなげる際に利用
@@ -200,6 +208,7 @@ public class GameScreen extends ScreenAdapter {
         Texture playerTexture = new Texture("uma.png");
         Texture enemysTexture = new Texture("enemy.png");
         Texture schoolTexture = new Texture("school.png");
+        Texture carTexture = new Texture("car.png");
 
 
         // TODO 初期の位置を考える( WORLD_HEIGHT /2は仮)　Playerを配置
@@ -213,6 +222,12 @@ public class GameScreen extends ScreenAdapter {
             float x = mRandom.nextFloat() * (WORLD_WIDTH - Enemy.ENEMY_WIDTH);
 
             if (mRandom.nextFloat() > 0.8f){
+
+                Car car = new Car(carTexture, 0, 0, 72, 72);
+                //CarはPlayerより上に配置
+                car.setPosition(x, y + Car.CAR_HEIGHT + mRandom.nextFloat() * 3 + mPlayer.getY());
+                mCars.add(car);
+
                 Enemy enemy = new Enemy(Enemy.ENEMY_MOVING_TYPE_NORMAL,enemysTexture, 0, 0, 120, 74);
                 //敵はPlayerより上に配置
                 enemy.setPosition(x, y + mPlayer.getY());
@@ -305,6 +320,12 @@ public class GameScreen extends ScreenAdapter {
 
         // Player
         mPlayer.update(delta);
+
+        // Car
+        for (int i =0; i < mCars.size(); i++){
+            mCars.get(i).update(delta);
+        }
+
 
         // 当たり判定を行う
         checkCollision();
