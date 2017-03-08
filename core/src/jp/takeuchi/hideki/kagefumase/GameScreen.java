@@ -54,6 +54,11 @@ public class GameScreen extends ScreenAdapter {
 
     Random mRandom;
     List<Enemy> mEnemys;
+
+    //捕まってない敵、捕まった敵を保持するリスト
+    List<Enemy> activeEnemies;
+    List<Enemy> caughtEnemies;
+
     List<Car> mCars;
     Player mPlayer;
     School mSchool;
@@ -94,6 +99,8 @@ public class GameScreen extends ScreenAdapter {
         // メンバ変数の初期化
         mRandom = new Random();
         mEnemys = new ArrayList<Enemy>();
+        activeEnemies = new ArrayList<Enemy>();
+        caughtEnemies = new ArrayList<Enemy>();
         mCars = new ArrayList<Car>();
 
         mTouchPoint = new Vector3();
@@ -375,27 +382,56 @@ public class GameScreen extends ScreenAdapter {
             return;
         }
 
+        activeEnemies.clear();
+        caughtEnemies.clear();
+
         //Enemyとの当たり判定)
-        for (int i = 0; i < mEnemys.size(); i++){
+        for (int i = 0; i < mEnemys.size(); i++) {
             Enemy enemy = mEnemys.get(i);
 
-            if (enemy.mState == Enemy.ENEMY_TYPE_CAUGHT){
-                continue;
+            if (enemy.mState == Enemy.ENEMY_TYPE_CAUGHT) {
+                activeEnemies.add(enemy);
+            } else {
+                caughtEnemies.add(enemy);
             }
+        }
 
+        for (int i = 0; i < activeEnemies.size(); i++){
+            for (int j = 0; j < caughtEnemies.size(); j++){
+                Enemy enemy1 = activeEnemies.get(i);
+                Enemy enemy2 = caughtEnemies.get(j);
+
+                if (enemy1.getBoundingRectangle()
+                        .overlaps(enemy2.getBoundingRectangle())){
+
+                    // 捕まってる敵と、捕まってない敵が当たった
+                    CatchEnemy( enemy1 );
+
+                }
+            }
+        }
+
+
+            //Enemyとの当たり判定)
+        for (int i = 0; i < mEnemys.size(); i++){
+            Enemy enemy = activeEnemies.get(i);
             if (mPlayer.getBoundingRectangle().overlaps(enemy.getBoundingRectangle())){
-                enemy.chatched();
-                mScore++; // ←追加する
-                if (mScore > mHighScore) { // ←追加する
-                    mHighScore = mScore; // ←追加する
-                    //ハイスコアをPreferenceに保存する
-                    mPrefs.putInteger("HIGHSCORE", mHighScore); // ←追加する
-                    mPrefs.flush(); // ←追加する
-                } // ←追加する
+                CatchEnemy(enemy);
                 break;
             }
         }
 
+    }
+
+    private void CatchEnemy(Enemy enemy){
+        enemy.chatched();
+        mScore++; // ←追加する
+        if (mScore > mHighScore) { // ←追加する
+            mHighScore = mScore; // ←追加する
+            //ハイスコアをPreferenceに保存する
+            mPrefs.putInteger("HIGHSCORE", mHighScore); // ←追加する
+            mPrefs.flush(); // ←追加する
+        } // ←追加する
     }
 
 }
