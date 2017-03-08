@@ -389,7 +389,7 @@ public class GameScreen extends ScreenAdapter {
         for (int i = 0; i < mEnemys.size(); i++) {
             Enemy enemy = mEnemys.get(i);
 
-            if (enemy.mState == Enemy.ENEMY_TYPE_CAUGHT) {
+            if (enemy.mState == Enemy.ENEMY_TYPE_MOVING) {
                 activeEnemies.add(enemy);
             } else {
                 caughtEnemies.add(enemy);
@@ -413,7 +413,7 @@ public class GameScreen extends ScreenAdapter {
 
 
             //Enemyとの当たり判定)
-        for (int i = 0; i < mEnemys.size(); i++){
+        for (int i = 0; i < activeEnemies.size(); i++){
             Enemy enemy = activeEnemies.get(i);
             if (mPlayer.getBoundingRectangle().overlaps(enemy.getBoundingRectangle())){
                 CatchEnemy(enemy);
