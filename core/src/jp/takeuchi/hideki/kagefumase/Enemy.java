@@ -126,4 +126,21 @@ public class Enemy extends GameObject{
         mState = ENEMY_TYPE_CAUGHT;
     //これがあると捕まえた敵が画面に表示されない。つまり後ろにつかない    setAlpha(0);
     }
+
+    // TODO 動きのメソッド作成。Swich分を簡易化
+    private void movenormal(){
+
+    }
+
+    private void moveleft(){
+
+    }
+
+    private void moveright(){
+
+    }
+
+    private void movelower(){
+
+    }
 }
