@@ -58,62 +58,28 @@ public class Enemy extends GameObject{
             //TODO キャラを動かして逃げる処理
             switch (mType){
                 case ENEMY_MOVING_TYPE_NORMAL:
-                    setX(getX() + velocity.x * deltaTime);
-
-                    if (getX() < ENEMY_WIDTH / 2) {
-                        velocity.x = -velocity.x;
-                        setX(ENEMY_WIDTH / 2);
-                    }
-
-                    if (getX() > GameScreen.WORLD_WIDTH - ENEMY_WIDTH / 2) {
-                        velocity.x = -velocity.x;
-                        setX(GameScreen.WORLD_WIDTH - ENEMY_WIDTH / 2);
-                    }
-
-                    if (mRandom.nextFloat() > 0.3f) {
-                        setY(getY() + velocity.y * deltaTime);
-                    }
+                    movenormal(deltaTime);
                     break;
 
                 case ENEMY_MOVING_TYPE_RIGHT:
                     setX(getX() + velocity.x * deltaTime*2);
 
-                    if (getX() < ENEMY_WIDTH / 2) {
-                        velocity.x = -velocity.x;
-                        setX(ENEMY_WIDTH / 2);
-                    }
-
-                    if (getX() > GameScreen.WORLD_WIDTH - ENEMY_WIDTH / 2) {
-                        velocity.x = -velocity.x;
-                        setX(GameScreen.WORLD_WIDTH - ENEMY_WIDTH / 2);
-                    }
-
-                    if (mRandom.nextFloat() > 0.6f) {
+                    if (mRandom.nextFloat() > 0.8f) {
                         setY(getY() + velocity.y * deltaTime);
                     }
+
                     break;
 
                 case ENEMY_MOVING_TYPE_LEFT:
                     setX(getX() - velocity.x * deltaTime*2);
 
-                    if (getX() < ENEMY_WIDTH / 2) {
-                        velocity.x = -velocity.x;
-                        setX(ENEMY_WIDTH / 2);
-                    }
-
-                    if (getX() > GameScreen.WORLD_WIDTH - ENEMY_WIDTH / 2) {
-                        velocity.x = -velocity.x;
-                        setX(GameScreen.WORLD_WIDTH - ENEMY_WIDTH / 2);
-                    }
-
-                    if (mRandom.nextFloat() > 0.6f) {
+                    if (mRandom.nextFloat() > 0.8f) {
                         setY(getY() + velocity.y * deltaTime);
                     }
                     break;
 
                 case ENEMY_MOVING_TYPE_LOWER:
-                    velocity.y = -velocity.y;
-                    setY(GameScreen.WORLD_HEIGHT -10 - velocity.y * deltaTime);
+                    setY(getY() - velocity.y * deltaTime*10);
                     break;
             }
 
@@ -127,20 +93,53 @@ public class Enemy extends GameObject{
     //これがあると捕まえた敵が画面に表示されない。つまり後ろにつかない    setAlpha(0);
     }
 
-    // TODO 動きのメソッド作成。Swich分を簡易化
-    private void movenormal(){
+    // TODO 動きのメソッド作成。Swichを簡易化
+    private void movenormal(float deltaTime){
+        setX(getX() + velocity.x * deltaTime);
+
+        if (getX() < ENEMY_WIDTH / 2) {
+            velocity.x = -velocity.x;
+            setX(ENEMY_WIDTH / 2);
+        }
+
+        if (getX() > GameScreen.WORLD_WIDTH - ENEMY_WIDTH / 2) {
+            velocity.x = -velocity.x;
+            setX(GameScreen.WORLD_WIDTH - ENEMY_WIDTH / 2);
+        }
+
+        if (mRandom.nextFloat() > 0.5f) {
+            setY(getY() + velocity.y * deltaTime);
+        }
 
     }
 
-    private void moveleft(){
+    private void moveright(float deltaTime){
+        setX(getX() + velocity.x * deltaTime*2);
+
+        if (getX() < ENEMY_WIDTH / 2) {
+            velocity.x = -velocity.x;
+            setX(ENEMY_WIDTH / 2);
+        }
+
+        if (getX() > GameScreen.WORLD_WIDTH - ENEMY_WIDTH / 2) {
+            velocity.x = -velocity.x;
+            setX(GameScreen.WORLD_WIDTH - ENEMY_WIDTH / 2);
+        }
+
+        if (mRandom.nextFloat() > 0.6f) {
+            setY(getY() + velocity.y * deltaTime);
+        }
+    }
+
+    private void moveleft(float deltaTime){
 
     }
 
-    private void moveright(){
 
-    }
 
-    private void movelower(){
+    private void movelower(float deltaTime){
+        velocity.y = -velocity.y;
+        setY(GameScreen.WORLD_HEIGHT -10 - velocity.y * deltaTime);
 
     }
 }

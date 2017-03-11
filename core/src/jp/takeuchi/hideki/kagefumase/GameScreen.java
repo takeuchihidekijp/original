@@ -310,13 +310,16 @@ public class GameScreen extends ScreenAdapter {
                 mEnemys.get(i).mType = mEnemys.get(i).ENEMY_MOVING_TYPE_NORMAL;
             }else{
                 if (mStatePoint.dst(mPlayer.getX(),mEnemys.get(i).getX(),0 )  > 1.5f) {
+                    Gdx.app.log("Kagefumase", "ENEMY_MOVING_TYPE_LEFT");
                     mEnemys.get(i).mType = mEnemys.get(i).ENEMY_MOVING_TYPE_LEFT;
                 }else{
+                    Gdx.app.log("Kagefumase", "ENEMY_MOVING_TYPE_RIGHT");
                     mEnemys.get(i).mType = mEnemys.get(i).ENEMY_MOVING_TYPE_RIGHT;
+
                 }
             }
 
-            if (mEnemys.get(i).getY() > WORLD_HEIGHT - 10) {
+            if (mEnemys.get(i).getY() > WORLD_HEIGHT - 20) {
                 mEnemys.get(i).mType = mEnemys.get(i).ENEMY_MOVING_TYPE_LOWER;
             }
 
@@ -337,13 +340,9 @@ public class GameScreen extends ScreenAdapter {
         // 当たり判定を行う
         checkCollision();
 
-        // ゲームオーバーか判断する
-        checkGameOver();
 
     }
-    private void checkGameOver(){
 
-    }
 
     private void updateGameOver() {
         if (Gdx.input.justTouched()) {
@@ -376,6 +375,16 @@ public class GameScreen extends ScreenAdapter {
     }
 
     private void checkCollision(){
+
+        // CarとPlayerとの当たり判定
+        for (int i =0; i < mCars.size(); i++){
+            Car car = mCars.get(i);
+            if (mPlayer.getBoundingRectangle().overlaps(car.getBoundingRectangle())){
+                mGameState = GAME_STATE_GAMEOVER;
+                return;
+            }
+        }
+
         // SCHOOL(ゴールとの当たり判定)
         if (mPlayer.getBoundingRectangle().overlaps(mSchool.getBoundingRectangle())) {
             mGameState = GAME_STATE_GAMEOVER;
@@ -411,6 +420,21 @@ public class GameScreen extends ScreenAdapter {
             }
         }
 
+        for (int i = 0; i < caughtEnemies.size(); i++){
+            for (int j = 0; j < mCars.size(); j++){
+                Enemy enemy1 = caughtEnemies.get(i);
+                Car car = mCars.get(j);
+
+                if (enemy1.getBoundingRectangle()
+                        .overlaps(car.getBoundingRectangle())){
+                 //捕まっている敵と車が衝突
+                    mGameState = GAME_STATE_GAMEOVER;
+                    return;
+
+                }
+            }
+        }
+
 
             //Enemyとの当たり判定)
         for (int i = 0; i < activeEnemies.size(); i++){
@@ -420,6 +444,7 @@ public class GameScreen extends ScreenAdapter {
                 break;
             }
         }
+
 
     }
 
@@ -433,5 +458,6 @@ public class GameScreen extends ScreenAdapter {
             mPrefs.flush(); // ←追加する
         } // ←追加する
     }
+
 
 }
