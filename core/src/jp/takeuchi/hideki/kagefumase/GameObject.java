@@ -18,4 +18,8 @@ public class GameObject extends Sprite {
         velocity = new Vector2();
         velocity_c = new Vector2();
     }
+
+    public Vector2 GetPosition(){
+        return new Vector2(this.getX(), this.getY());
+    }
 }

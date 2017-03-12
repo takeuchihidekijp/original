@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
@@ -99,6 +100,8 @@ public class GameScreen extends ScreenAdapter {
         // メンバ変数の初期化
         mRandom = new Random();
         mEnemys = new ArrayList<Enemy>();
+
+
         activeEnemies = new ArrayList<Enemy>();
         caughtEnemies = new ArrayList<Enemy>();
         mCars = new ArrayList<Car>();
@@ -303,25 +306,26 @@ public class GameScreen extends ScreenAdapter {
 
         }
 
+
         //Enemy
         for (int i =0; i < mEnemys.size(); i++){
 
-            if (mStatePoint.dst(mPlayer.getY(),mEnemys.get(i).getY(),0 )  > 2.5f){
-                mEnemys.get(i).mType = mEnemys.get(i).ENEMY_MOVING_TYPE_NORMAL;
-            }else{
-                if (mStatePoint.dst(mPlayer.getX(),mEnemys.get(i).getX(),0 )  > 1.5f) {
-                    Gdx.app.log("Kagefumase", "ENEMY_MOVING_TYPE_LEFT");
-                    mEnemys.get(i).mType = mEnemys.get(i).ENEMY_MOVING_TYPE_LEFT;
-                }else{
-                    Gdx.app.log("Kagefumase", "ENEMY_MOVING_TYPE_RIGHT");
-                    mEnemys.get(i).mType = mEnemys.get(i).ENEMY_MOVING_TYPE_RIGHT;
-
-                }
-            }
-
-            if (mEnemys.get(i).getY() > WORLD_HEIGHT - 20) {
-                mEnemys.get(i).mType = mEnemys.get(i).ENEMY_MOVING_TYPE_LOWER;
-            }
+  //          if (mStatePoint.dst(mPlayer.getY(),mEnemys.get(i).getY(),0 )  > 2.5f){
+   //             mEnemys.get(i).mType = mEnemys.get(i).ENEMY_MOVING_TYPE_NORMAL;
+  //          }else{
+  //              if (mStatePoint.dst(mPlayer.getX(),mEnemys.get(i).getX(),0 )  > 1.5f) {
+ //                   Gdx.app.log("Kagefumase", "ENEMY_MOVING_TYPE_LEFT");
+    //                mEnemys.get(i).mType = mEnemys.get(i).ENEMY_MOVING_TYPE_LEFT;
+ //               }else{
+  //                  Gdx.app.log("Kagefumase", "ENEMY_MOVING_TYPE_RIGHT");
+  //                  mEnemys.get(i).mType = mEnemys.get(i).ENEMY_MOVING_TYPE_RIGHT;
+//
+  //              }
+  //          }
+//
+  //          if (mEnemys.get(i).getY() > WORLD_HEIGHT - 20) {
+    //            mEnemys.get(i).mType = mEnemys.get(i).ENEMY_MOVING_TYPE_LOWER;
+ //           }
 
             mEnemys.get(i).update(delta);
 
@@ -457,6 +461,10 @@ public class GameScreen extends ScreenAdapter {
             mPrefs.putInteger("HIGHSCORE", mHighScore); // ←追加する
             mPrefs.flush(); // ←追加する
         } // ←追加する
+    }
+
+    public Vector2 GetPlayerPos(){
+        return mPlayer.GetPosition();
     }
 
 

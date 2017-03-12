@@ -11,6 +11,8 @@ import java.util.Random;
 
 public class Enemy extends GameObject{
 
+    public GameScreen gameScreen;
+
     // 横幅、高さ 敵のサイズはUFOと同じとする
     public static final float ENEMY_WIDTH = 2.0f;
     public static final float ENEMY_HEIGHT = 1.3f;
@@ -53,36 +55,16 @@ public class Enemy extends GameObject{
 
     // TODO
     public void update(float deltaTime){
+
+        Vector2 playerPos = gameScreen.GetPlayerPos();
+        Vector2 pos = this.GetPosition();
+
         if (mState == ENEMY_TYPE_MOVING) {
-
-            //TODO キャラを動かして逃げる処理
-            switch (mType){
-                case ENEMY_MOVING_TYPE_NORMAL:
-                    movenormal(deltaTime);
-                    break;
-
-                case ENEMY_MOVING_TYPE_RIGHT:
-                    setX(getX() + velocity.x * deltaTime*2);
-
-                    if (mRandom.nextFloat() > 0.8f) {
-                        setY(getY() + velocity.y * deltaTime);
-                    }
-
-                    break;
-
-                case ENEMY_MOVING_TYPE_LEFT:
-                    setX(getX() - velocity.x * deltaTime*2);
-
-                    if (mRandom.nextFloat() > 0.8f) {
-                        setY(getY() + velocity.y * deltaTime);
-                    }
-                    break;
-
-                case ENEMY_MOVING_TYPE_LOWER:
-                    setY(getY() - velocity.y * deltaTime*10);
-                    break;
+            if (pos.dst(playerPos) > 2.5f) {
+                movenormal(deltaTime);
+            } else {
+                moveescape(deltaTime);
             }
-
         }
     }
 
@@ -93,7 +75,7 @@ public class Enemy extends GameObject{
     //これがあると捕まえた敵が画面に表示されない。つまり後ろにつかない    setAlpha(0);
     }
 
-    // TODO 動きのメソッド作成。Swichを簡易化
+    // TODO 動きのメソッド作成。
     private void movenormal(float deltaTime){
         setX(getX() + velocity.x * deltaTime);
 
@@ -109,37 +91,61 @@ public class Enemy extends GameObject{
 
         if (mRandom.nextFloat() > 0.5f) {
             setY(getY() + velocity.y * deltaTime);
+        }else {
+            setY(getY() - velocity.y * deltaTime);
         }
 
     }
 
+    private void moveescape(float deltaTime){
+        Vector2 playerPos = gameScreen.GetPlayerPos();
+
+        Vector2 diff = playerPos.sub(this.GetPosition());
+
+        // Y軸の距離がX軸の距離より大きい
+        if (Math.abs(diff.x) < (Math.abs(diff.y))) {
+            if (diff.y > 0) {
+                // 下に逃げる
+                setY(getY() - velocity.y * deltaTime*2);
+            } else {
+                // 上に逃げる
+                setY(getY() + velocity.y * deltaTime*2);
+            }
+        }else{
+            // X軸の距離がY軸の距離より大きい
+            if (diff.x > 0) {
+                // 左に逃げる
+                setX(getX() - velocity.x * deltaTime*2);
+            }else{
+                // 右に逃げる
+                setX(getX() + velocity.x * deltaTime*2);
+            }
+
+        }
+    }
+
+
+
+   //以降のメソッドは昔のメモ。いらなくなったら削除
+
     private void moveright(float deltaTime){
         setX(getX() + velocity.x * deltaTime*2);
 
-        if (getX() < ENEMY_WIDTH / 2) {
-            velocity.x = -velocity.x;
-            setX(ENEMY_WIDTH / 2);
-        }
-
-        if (getX() > GameScreen.WORLD_WIDTH - ENEMY_WIDTH / 2) {
-            velocity.x = -velocity.x;
-            setX(GameScreen.WORLD_WIDTH - ENEMY_WIDTH / 2);
-        }
-
-        if (mRandom.nextFloat() > 0.6f) {
+        if (mRandom.nextFloat() > 0.8f) {
             setY(getY() + velocity.y * deltaTime);
         }
     }
 
     private void moveleft(float deltaTime){
+        setX(getX() - velocity.x * deltaTime*2);
+
+        if (mRandom.nextFloat() > 0.8f) {
+            setY(getY() + velocity.y * deltaTime);
+        }
 
     }
 
-
-
     private void movelower(float deltaTime){
-        velocity.y = -velocity.y;
-        setY(GameScreen.WORLD_HEIGHT -10 - velocity.y * deltaTime);
-
+        setY(getY() - velocity.y * deltaTime*10);
     }
 }
