@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -77,6 +78,8 @@ public class GameScreen extends ScreenAdapter {
 
     Preferences mPrefs; // ←追加する
 
+    Music music;
+
 
     public GameScreen(Kagefumase game){
         mGame = game;
@@ -115,6 +118,12 @@ public class GameScreen extends ScreenAdapter {
         mFont.getData().setScale(0.8f);
         mScore = 0;
         mHighScore = 0;
+
+        //音楽はここから。http://opengameart.org/content/summCC0er-sunday　ライセンスは
+        music = Gdx.audio.newMusic(Gdx.files.internal("Summer Sunday.wav"));
+        music.setLooping(true);
+        music.setVolume(0.5f);
+        music.play();
 
         // ハイスコアをPreferencesから取得する
         mPrefs = Gdx.app.getPreferences("jp.techacademy.hideki.takeuchi.kagefumase"); // ←追加する
@@ -308,28 +317,43 @@ public class GameScreen extends ScreenAdapter {
 
 
         //Enemy
-        for (int i =0; i < mEnemys.size(); i++){
+        for (int i =0; i < mEnemys.size(); i++) {
+            if (mPlayer.GetPosition().dst(mEnemys.get(i).GetPosition()) > 2.5f) {
+                mEnemys.get(i).mType = mEnemys.get(i).ENEMY_MOVING_TYPE_NORMAL;
+            } else {
+                Vector2 diff = mPlayer.GetPosition().sub(mEnemys.get(i).GetPosition());
 
-  //          if (mStatePoint.dst(mPlayer.getY(),mEnemys.get(i).getY(),0 )  > 2.5f){
-   //             mEnemys.get(i).mType = mEnemys.get(i).ENEMY_MOVING_TYPE_NORMAL;
-  //          }else{
-  //              if (mStatePoint.dst(mPlayer.getX(),mEnemys.get(i).getX(),0 )  > 1.5f) {
- //                   Gdx.app.log("Kagefumase", "ENEMY_MOVING_TYPE_LEFT");
-    //                mEnemys.get(i).mType = mEnemys.get(i).ENEMY_MOVING_TYPE_LEFT;
- //               }else{
-  //                  Gdx.app.log("Kagefumase", "ENEMY_MOVING_TYPE_RIGHT");
-  //                  mEnemys.get(i).mType = mEnemys.get(i).ENEMY_MOVING_TYPE_RIGHT;
-//
-  //              }
-  //          }
-//
-  //          if (mEnemys.get(i).getY() > WORLD_HEIGHT - 20) {
-    //            mEnemys.get(i).mType = mEnemys.get(i).ENEMY_MOVING_TYPE_LOWER;
- //           }
+                if (Math.abs(diff.x) < (Math.abs(diff.y))) {
+                    if (diff.y > 0) {
+                        // 下に逃げる
+                        mEnemys.get(i).mType = mEnemys.get(i).ENEMY_MOVING_TYPE_LOWER;
+                    } else {
+                        // 上に逃げる
+                        mEnemys.get(i).mType = mEnemys.get(i).ENEMY_MOVING_TYPE_UPPER;
+                    }
 
-            mEnemys.get(i).update(delta);
+                } else {
+                    // X軸の距離がY軸の距離より大きい
+                    if (diff.x > 0) {
+                        // 左に逃げる
+                        mEnemys.get(i).mType = mEnemys.get(i).ENEMY_MOVING_TYPE_LEFT;
+                    } else {
+                        // 右に逃げる
+                        mEnemys.get(i).mType = mEnemys.get(i).ENEMY_MOVING_TYPE_RIGHT;
+                    }
 
-         }
+                }
+
+
+            }
+                if (mEnemys.get(i).getY() > WORLD_HEIGHT - 20) {
+                mEnemys.get(i).mType = mEnemys.get(i).ENEMY_MOVING_TYPE_STOP;
+                 }
+
+                mEnemys.get(i).update(delta);
+
+
+        }
 
 
         // Player
@@ -349,6 +373,7 @@ public class GameScreen extends ScreenAdapter {
 
 
     private void updateGameOver() {
+        music.dispose();
         if (Gdx.input.justTouched()) {
             mGame.setScreen(new ResultScreen(mGame, mScore));
         }

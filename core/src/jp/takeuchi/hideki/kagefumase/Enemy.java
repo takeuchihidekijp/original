@@ -56,14 +56,29 @@ public class Enemy extends GameObject{
     // TODO
     public void update(float deltaTime){
 
-        Vector2 playerPos = gameScreen.GetPlayerPos();
-        Vector2 pos = this.GetPosition();
-
         if (mState == ENEMY_TYPE_MOVING) {
-            if (pos.dst(playerPos) > 2.5f) {
-                movenormal(deltaTime);
-            } else {
-                moveescape(deltaTime);
+            switch (mType){
+                case ENEMY_MOVING_TYPE_NORMAL:
+                    movenormal(deltaTime);
+                    break;
+                case ENEMY_MOVING_TYPE_UPPER:
+                    // 上に逃げる
+                    setY(getY() + velocity.y * deltaTime*2);
+                    break;
+                case ENEMY_MOVING_TYPE_RIGHT:
+                    // 右に逃げる
+                    setX(getX() + velocity.x * deltaTime*2);
+                    break;
+                case ENEMY_MOVING_TYPE_LEFT:
+                    // 左に逃げる
+                    setX(getX() - velocity.x * deltaTime*2);
+                case ENEMY_MOVING_TYPE_LOWER:
+                    // 下に逃げる
+                    setY(getY() - velocity.y * deltaTime*2);
+                case ENEMY_MOVING_TYPE_STOP:
+                    // 下に逃げる
+                    setY(getY() - velocity.y * deltaTime*10);
+
             }
         }
     }
@@ -97,55 +112,4 @@ public class Enemy extends GameObject{
 
     }
 
-    private void moveescape(float deltaTime){
-        Vector2 playerPos = gameScreen.GetPlayerPos();
-
-        Vector2 diff = playerPos.sub(this.GetPosition());
-
-        // Y軸の距離がX軸の距離より大きい
-        if (Math.abs(diff.x) < (Math.abs(diff.y))) {
-            if (diff.y > 0) {
-                // 下に逃げる
-                setY(getY() - velocity.y * deltaTime*2);
-            } else {
-                // 上に逃げる
-                setY(getY() + velocity.y * deltaTime*2);
-            }
-        }else{
-            // X軸の距離がY軸の距離より大きい
-            if (diff.x > 0) {
-                // 左に逃げる
-                setX(getX() - velocity.x * deltaTime*2);
-            }else{
-                // 右に逃げる
-                setX(getX() + velocity.x * deltaTime*2);
-            }
-
-        }
-    }
-
-
-
-   //以降のメソッドは昔のメモ。いらなくなったら削除
-
-    private void moveright(float deltaTime){
-        setX(getX() + velocity.x * deltaTime*2);
-
-        if (mRandom.nextFloat() > 0.8f) {
-            setY(getY() + velocity.y * deltaTime);
-        }
-    }
-
-    private void moveleft(float deltaTime){
-        setX(getX() - velocity.x * deltaTime*2);
-
-        if (mRandom.nextFloat() > 0.8f) {
-            setY(getY() + velocity.y * deltaTime);
-        }
-
-    }
-
-    private void movelower(float deltaTime){
-        setY(getY() - velocity.y * deltaTime*10);
-    }
 }
