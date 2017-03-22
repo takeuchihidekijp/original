@@ -11,6 +11,9 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -78,17 +81,21 @@ public class GameScreen extends ScreenAdapter {
 
     Preferences mPrefs; // ←追加する
 
-    Music music;
+    private List<Vector3> PlayerPositionLog; // プレイヤーの移動座標の履歴
+
+    private TiledMap tiledMap;
+    private OrthogonalTiledMapRenderer tiledMapRenderer;
 
 
     public GameScreen(Kagefumase game){
         mGame = game;
 
         // TODO 背景の準備 まだ画像を用意できず
-        Texture bgTexture = new Texture("back.png");
+
+   //    Texture bgTexture = new Texture("back.png");
         // TextureRegionで切り出す時の原点は左上
-        mBg = new Sprite( new TextureRegion(bgTexture, 0, 0, 540, 810));
-        mBg.setPosition(0, 0);
+  //   mBg = new Sprite( new TextureRegion(bgTexture, 0, 0, 540, 810));
+  //   mBg.setPosition(0, 0);
 
         // カメラ、ViewPortを生成、設定する
         mCamera = new OrthographicCamera();
@@ -119,15 +126,13 @@ public class GameScreen extends ScreenAdapter {
         mScore = 0;
         mHighScore = 0;
 
-        //音楽はここから。http://opengameart.org/content/summCC0er-sunday　ライセンスは
-        music = Gdx.audio.newMusic(Gdx.files.internal("Summer Sunday.wav"));
-        music.setLooping(true);
-        music.setVolume(0.5f);
-        music.play();
 
         // ハイスコアをPreferencesから取得する
         mPrefs = Gdx.app.getPreferences("jp.techacademy.hideki.takeuchi.kagefumase"); // ←追加する
         mHighScore = mPrefs.getInteger("HIGHSCORE", 0); // ←追加する
+
+        tiledMap = new TmxMapLoader().load("map_ori.tmx"); // マップファイル読込
+        tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
 
         createStage();
 
@@ -135,6 +140,7 @@ public class GameScreen extends ScreenAdapter {
 
     @Override
     public void render(float delta){
+
 
         // 状態を更新する
         update(delta);
@@ -151,11 +157,14 @@ public class GameScreen extends ScreenAdapter {
         mCamera.update();
         mGame.batch.setProjectionMatrix(mCamera.combined);
 
+        tiledMapRenderer.setView(mCamera); // カメラを設定
+        tiledMapRenderer.render();
+
         mGame.batch.begin();
 
         // 原点は左下
-        mBg.setPosition(mCamera.position.x - CAMERA_WIDTH / 2, mCamera.position.y - CAMERA_HEIGHT / 2);
-        mBg.draw(mGame.batch);
+  //  mBg.setPosition(mCamera.position.x - CAMERA_WIDTH / 2, mCamera.position.y - CAMERA_HEIGHT / 2);
+ //  mBg.draw(mGame.batch);
 
         // Car
         for (int i=0; i < mCars.size(); i++){
@@ -373,7 +382,7 @@ public class GameScreen extends ScreenAdapter {
 
 
     private void updateGameOver() {
-        music.dispose();
+      //  music.dispose();
         if (Gdx.input.justTouched()) {
             mGame.setScreen(new ResultScreen(mGame, mScore));
         }
@@ -486,10 +495,6 @@ public class GameScreen extends ScreenAdapter {
             mPrefs.putInteger("HIGHSCORE", mHighScore); // ←追加する
             mPrefs.flush(); // ←追加する
         } // ←追加する
-    }
-
-    public Vector2 GetPlayerPos(){
-        return mPlayer.GetPosition();
     }
 
 
