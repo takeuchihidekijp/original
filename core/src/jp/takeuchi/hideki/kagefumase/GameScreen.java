@@ -206,6 +206,8 @@ public class GameScreen extends ScreenAdapter {
                 // プレイヤーの過去の座標を捕まった敵に適応
                 mEnemys.get(i).setPosition( PlayerPositionLog.get(currentIndex).x,PlayerPositionLog.get(currentIndex).y );
                 mEnemys.get(i).draw(mGame.batch);
+
+                z++;
             }
 
         }
