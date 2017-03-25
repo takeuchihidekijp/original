@@ -81,7 +81,10 @@ public class GameScreen extends ScreenAdapter {
 
     Preferences mPrefs; // ←追加する
 
-    private List<Vector3> PlayerPositionLog; // プレイヤーの移動座標の履歴
+ //   List<Vector3> PlayerPositionLog; // プレイヤーの移動座標の履歴
+
+    // プレイヤーの座標ログを初期化
+    List<Vector3> PlayerPositionLog = new ArrayList<Vector3>();
 
     private TiledMap tiledMap;
     private OrthogonalTiledMapRenderer tiledMapRenderer;
@@ -172,6 +175,19 @@ public class GameScreen extends ScreenAdapter {
         }
 
 
+        // 最新の座標のインデックス
+        int lastIndex = PlayerPositionLog.size() - 1;
+
+        // 停止している場合は座標を追加しないようにするなら
+        // 最新の座標からいてい数値以上動かなければ追加しないようにする
+        if( PlayerPositionLog.get(lastIndex).dst( mPlayer.getX(), mPlayer.getY(), 0 ) > 0.1f ) {
+
+            // プレイヤーの座標を履歴に追加
+            PlayerPositionLog.add( new Vector3( mPlayer.getX(), mPlayer.getY(), 0 ) );
+        }
+
+
+
         // Enemy
         //ｚは捕まえた敵の数を保持して後続の描画で後ろにつなげる際に利用
         int z = 1;
@@ -180,28 +196,16 @@ public class GameScreen extends ScreenAdapter {
             if ( mEnemys.get(i).mState == Enemy.ENEMY_TYPE_MOVING){
                 mEnemys.get(i).draw(mGame.batch);
             }else {
-                if (mPlayer.mType == mPlayer.PLAYER_STATE_UPPER) {
-                    //プレイヤーの向きが上向き
-                    //捕まった敵をX軸はプレイヤーと一緒。Y軸はプレイヤーの位置から捕まえた敵の数分引いていく
-                    mEnemys.get(i).setPosition(mPlayer.getX(), mPlayer.getY() - mEnemys.get(i).getHeight() * z);
-                    mEnemys.get(i).draw(mGame.batch);
-                    z++;
-                }else if (mPlayer.mType == mPlayer.PLAYER_STATE_LOWER){
-                    //プレイヤーの向きが下向き
-                    mEnemys.get(i).setPosition(mPlayer.getX(), mPlayer.getY() + mEnemys.get(i).getHeight() *z);
-                    mEnemys.get(i).draw(mGame.batch);
-                    z++;
-                }else if (mPlayer.mType == mPlayer.PLAYER_STATE_RIGHT){
-                    //プレイヤーの向きが右向き
-                    mEnemys.get(i).setPosition(mPlayer.getX() - mEnemys.get(i).getWidth() *z, mPlayer.getY());
-                    mEnemys.get(i).draw(mGame.batch);
-                    z++;
-                }else if (mPlayer.mType == mPlayer.PLAYER_STATE_LEFT){
-                    //プレイヤーの向きが左向き
-                    mEnemys.get(i).setPosition(mPlayer.getX() + mEnemys.get(i).getWidth() *z, mPlayer.getY());
-                    mEnemys.get(i).draw(mGame.batch);
-                    z++;
-                }
+
+                // 最新から z * 10 個古いものを参照
+                int currentIndex = lastIndex - z * 10;
+
+                // アンダーフロー防止
+                if( currentIndex < 0 ) currentIndex = 0;
+
+                // プレイヤーの過去の座標を捕まった敵に適応
+                mEnemys.get(i).setPosition( PlayerPositionLog.get(currentIndex).x,PlayerPositionLog.get(currentIndex).y );
+                mEnemys.get(i).draw(mGame.batch);
             }
 
         }
@@ -243,6 +247,10 @@ public class GameScreen extends ScreenAdapter {
         mPlayer = new Player(Player.PLAYER_STATE_UPPER, playerTexture, 0, 0, 72, 72);
   //      mPlayer.setPosition(WORLD_WIDTH / 2 - mPlayer.getWidth() / 2, WORLD_HEIGHT /2);
         mPlayer.setPosition(WORLD_WIDTH / 2 - mPlayer.getWidth() / 2, 5.0f);
+
+
+        // プレイヤーの初期座標を追加
+        PlayerPositionLog.add( new Vector3( mPlayer.getX(), mPlayer.getY(), 0 ) );
 
         // TODO Enemyをゴールの高さまで配置していく(配置ロジック検討)
         float y = 0;
