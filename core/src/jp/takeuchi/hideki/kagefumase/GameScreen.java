@@ -31,6 +31,7 @@ import java.util.Random;
 
 public class GameScreen extends ScreenAdapter {
 
+
     static final float CAMERA_WIDTH = 10;
     static final float CAMERA_HEIGHT = 15;
 
@@ -152,6 +153,7 @@ public class GameScreen extends ScreenAdapter {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         // カメラの中心を超えたらカメラを上に移動させる つまりキャラが画面の上半分には絶対に行かない
+        //TODO 横軸つまりX軸も以下のロジックを検討
         if (mPlayer.getY() > mCamera.position.y) {
             mCamera.position.y = mPlayer.getY();
         }
@@ -162,6 +164,8 @@ public class GameScreen extends ScreenAdapter {
 
         tiledMapRenderer.setView(mCamera); // カメラを設定
         tiledMapRenderer.render();
+
+
 
         mGame.batch.begin();
 
