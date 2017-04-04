@@ -37,11 +37,12 @@ public class Player extends GameObject{
         setPosition(getX() + velocity.x * delta, getY() + velocity.y * delta);
 
         // 画面の端まで来たら反対側に移動させる
-        if (getX() + PLAYER_WIDTH / 2 < 0) {
-            setX(GameScreen.WORLD_WIDTH - PLAYER_WIDTH / 2);
-        } else if (getX() + PLAYER_WIDTH / 2 > GameScreen.WORLD_WIDTH) {
-            setX(0);
-        }
+        //TODO 20170404 いったんコメント 今だとマップが大きすぎて合わない。マップを変えたらまた復活を検討。その場合は、WORLDじゃなくてほかのロジック
+     //   if (getX() + PLAYER_WIDTH / 2 < 0) {
+     //      setX(GameScreen.WORLD_WIDTH - PLAYER_WIDTH / 2);
+     //  } else if (getX() + PLAYER_WIDTH / 2 > GameScreen.WORLD_WIDTH) {
+     //      setX(0);
+     //  }
     }
 
 }

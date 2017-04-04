@@ -32,12 +32,22 @@ import java.util.Random;
 public class GameScreen extends ScreenAdapter {
 
 
-    static final float CAMERA_WIDTH = 10;
-    static final float CAMERA_HEIGHT = 15;
+ //   static final float CAMERA_WIDTH = 10;
+ //   static final float CAMERA_HEIGHT = 15;
 
-    static final float WORLD_WIDTH = 10;
+    static final float CAMERA_WIDTH = 16;
+    static final float CAMERA_HEIGHT = 24;
+
+
+
+    //TODO 20170404 そもそもCamera_とWORLD_の大きさを検討。マップと一緒に検討
+  //  static final float WORLD_WIDTH = 10;
 //    static final float WORLD_HEIGHT = 15 * 20; // 20画面分登れば終了
-    static final float WORLD_HEIGHT = 15 * 5; // TEST 5画面分登れば終了
+ //   static final float WORLD_HEIGHT = 15 * 5; // TEST 5画面分登れば終了
+
+    static final float WORLD_WIDTH = 16;
+    //    static final float WORLD_HEIGHT = 15 * 20; // 20画面分登れば終了
+    static final float WORLD_HEIGHT = 24 * 5; // TEST 5画面分登れば終了
 
     static final int GAME_STATE_READY = 0;
     static final int GAME_STATE_PLAYING = 1;
@@ -45,6 +55,10 @@ public class GameScreen extends ScreenAdapter {
 
     static final float GUI_WIDTH = 320;
     static final float GUI_HEIGHT = 480;
+
+  //  static final float GUI_WIDTH = 320;
+ //   static final float GUI_HEIGHT = 480;
+
 
     //画面の縦の三分の一（横に移動させるために利用）
     static final float GUI_HEIGHT3 = 160;
@@ -89,6 +103,9 @@ public class GameScreen extends ScreenAdapter {
 
     private TiledMap tiledMap;
     private OrthogonalTiledMapRenderer tiledMapRenderer;
+
+    public static final String LOG_TAG = GameScreen.class.getSimpleName();
+
 
 
     public GameScreen(Kagefumase game){
@@ -136,6 +153,7 @@ public class GameScreen extends ScreenAdapter {
         mHighScore = mPrefs.getInteger("HIGHSCORE", 0); // ←追加する
 
         tiledMap = new TmxMapLoader().load("map_ori.tmx"); // マップファイル読込
+     //   tiledMap = new TmxMapLoader().load("test.tmx"); // マップファイル読込
         tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
 
         createStage();
@@ -153,10 +171,10 @@ public class GameScreen extends ScreenAdapter {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         // カメラの中心を超えたらカメラを上に移動させる つまりキャラが画面の上半分には絶対に行かない
-        //TODO 横軸つまりX軸も以下のロジックを検討
-        if (mPlayer.getY() > mCamera.position.y) {
-            mCamera.position.y = mPlayer.getY();
-        }
+        //playerの動きにカメラを追随させるので削除
+   //     if (mPlayer.getY() > mCamera.position.y) {
+   //         mCamera.position.y = mPlayer.getY();
+   //     }
 
         // カメラの座標をアップデート（計算）し、スプライトの表示に反映させる
         mCamera.update();
@@ -218,6 +236,9 @@ public class GameScreen extends ScreenAdapter {
 
         //Player
         mPlayer.draw(mGame.batch);
+
+
+
 
         //School
         mSchool.draw(mGame.batch);
@@ -382,6 +403,16 @@ public class GameScreen extends ScreenAdapter {
         // Player
         mPlayer.update(delta);
 
+        // タッチ位置を取得（スクリーン座標）
+        float touchX = Gdx.input.getX();
+        float touchY = Gdx.input.getY();
+
+        // Stageにあわせて論理座標に変換
+        Vector2 touchPos = new Vector2(touchX,touchY);
+
+        Gdx.app.log("ydown", " touch_cnv x:"+ touchPos.x + " y:" + touchPos.y);   // タッチ位置をデバッグ出力
+
+
         // Car
         for (int i =0; i < mCars.size(); i++){
             mCars.get(i).update(delta);
@@ -406,23 +437,31 @@ public class GameScreen extends ScreenAdapter {
     private void left(){
         mPlayer.mType = mPlayer.PLAYER_STATE_LEFT;
         mPlayer.setPosition(mPlayer.getX()-0.1f,mPlayer.getY());
+        //20170404
+        mCamera.position.x = mPlayer.getX();
 
     }
     private void right(){
         mPlayer.mType = mPlayer.PLAYER_STATE_RIGHT;
         mPlayer.setPosition(mPlayer.getX()+0.1f,mPlayer.getY());
+        //20170404
+        mCamera.position.x = mPlayer.getX();
 
     }
 
     private void upper(){
         mPlayer.mType = mPlayer.PLAYER_STATE_UPPER;
         mPlayer.setPosition(mPlayer.getX(),mPlayer.getY()+0.1f);
+     //20170404
+        mCamera.position.y = mPlayer.getY();
 
     }
 
     private void lower(){
         mPlayer.mType = mPlayer.PLAYER_STATE_LOWER;
         mPlayer.setPosition(mPlayer.getX(),mPlayer.getY()-0.1f);
+        //20170404
+        mCamera.position.y = mPlayer.getY();
 
     }
 
