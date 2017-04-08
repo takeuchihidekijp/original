@@ -106,6 +106,7 @@ public class GameScreen extends ScreenAdapter {
 
     public static final String LOG_TAG = GameScreen.class.getSimpleName();
 
+    Music music;
 
 
     public GameScreen(Kagefumase game){
@@ -146,6 +147,13 @@ public class GameScreen extends ScreenAdapter {
         mFont.getData().setScale(0.8f);
         mScore = 0;
         mHighScore = 0;
+
+        //音楽はここから。http://opengameart.org/content/summCC0er-sunday　ライセンスは
+        //CC0 1.0
+        music = Gdx.audio.newMusic(Gdx.files.internal("Summer Sunday.wav"));
+        music.setLooping(true);
+        music.setVolume(0.5f);
+        music.play();
 
 
         // ハイスコアをPreferencesから取得する
@@ -427,7 +435,7 @@ public class GameScreen extends ScreenAdapter {
 
 
     private void updateGameOver() {
-      //  music.dispose();
+        music.dispose();
         if (Gdx.input.justTouched()) {
             mGame.setScreen(new ResultScreen(mGame, mScore));
         }
