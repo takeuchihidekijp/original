@@ -83,6 +83,9 @@ public class GameScreen extends ScreenAdapter {
     Player mPlayer;
     School mSchool;
 
+    //shadow 確認
+    Shadow mShadow;
+
     int mGameState;
 
     Vector3 mTouchPoint; //継続してタッチされた座標を保持するメンバ変数
@@ -118,6 +121,7 @@ public class GameScreen extends ScreenAdapter {
         // TextureRegionで切り出す時の原点は左上
   //   mBg = new Sprite( new TextureRegion(bgTexture, 0, 0, 540, 810));
   //   mBg.setPosition(0, 0);
+
 
         // カメラ、ViewPortを生成、設定する
         mCamera = new OrthographicCamera();
@@ -162,7 +166,9 @@ public class GameScreen extends ScreenAdapter {
 
         tiledMap = new TmxMapLoader().load("map_ori.tmx"); // マップファイル読込
      //   tiledMap = new TmxMapLoader().load("test.tmx"); // マップファイル読込
-        tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
+
+        //TODO MAPを読むときに1/10f を設定して画面の大きさを変える。まだ調整
+        tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap, 1/10f);
 
         createStage();
 
@@ -225,6 +231,9 @@ public class GameScreen extends ScreenAdapter {
             //20170301
             if ( mEnemys.get(i).mState == Enemy.ENEMY_TYPE_MOVING){
                 mEnemys.get(i).draw(mGame.batch);
+                //ememy shadow
+                mShadow.setPosition(mEnemys.get(i).getX()+1,mEnemys.get(i).getY()-1);
+                mShadow.draw(mGame.batch);
             }else {
 
                 // 最新から z * 10 個古いものを参照
@@ -236,6 +245,9 @@ public class GameScreen extends ScreenAdapter {
                 // プレイヤーの過去の座標を捕まった敵に適応
                 mEnemys.get(i).setPosition( PlayerPositionLog.get(currentIndex).x,PlayerPositionLog.get(currentIndex).y );
                 mEnemys.get(i).draw(mGame.batch);
+                //ememy shadow
+                mShadow.setPosition(mEnemys.get(i).getX()+1,mEnemys.get(i).getY()-1);
+                mShadow.draw(mGame.batch);
 
                 z++;
             }
@@ -244,6 +256,10 @@ public class GameScreen extends ScreenAdapter {
 
         //Player
         mPlayer.draw(mGame.batch);
+
+        //Player shadow
+        mShadow.setPosition(mPlayer.getX()+1,mPlayer.getY()-1);
+        mShadow.draw(mGame.batch);
 
 
 
@@ -276,6 +292,11 @@ public class GameScreen extends ScreenAdapter {
         Texture enemysTexture = new Texture("enemy.png");
         Texture schoolTexture = new Texture("school.png");
         Texture carTexture = new Texture("car.png");
+
+        // TODO ここで影の初期化。影の画像は仮。
+        Texture swTexture = new Texture("shadow.png");
+        mShadow = new Shadow(swTexture,0,0,72,72);
+
 
 
         // TODO 初期の位置を考える( WORLD_HEIGHT /2は仮)　Playerを配置
