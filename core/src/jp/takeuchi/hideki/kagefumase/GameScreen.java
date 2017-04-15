@@ -530,8 +530,14 @@ public class GameScreen extends ScreenAdapter {
                 Enemy enemy1 = activeEnemies.get(i);
                 Enemy enemy2 = caughtEnemies.get(j);
 
+                //つかまっている敵の影を設定し、つかまっている敵の影と敵のあたり判定を行う。
+                mShadow.setPosition(enemy2.getX()+1,enemy2.getY()-1);
+
+                //影のあたり判定ではなくキャラ同士のあたり判定
+       //         if (enemy1.getBoundingRectangle()
+       //                 .overlaps(enemy2.getBoundingRectangle())){
                 if (enemy1.getBoundingRectangle()
-                        .overlaps(enemy2.getBoundingRectangle())){
+                        .overlaps(mShadow.getBoundingRectangle())){
 
                     // 捕まってる敵と、捕まってない敵が当たった
                     CatchEnemy( enemy1 );
@@ -559,7 +565,13 @@ public class GameScreen extends ScreenAdapter {
             //Enemyとの当たり判定)
         for (int i = 0; i < activeEnemies.size(); i++){
             Enemy enemy = activeEnemies.get(i);
-            if (mPlayer.getBoundingRectangle().overlaps(enemy.getBoundingRectangle())){
+            //Playerの影を設定し、Playerの影と敵のあたり判定を行う。
+            mShadow.setPosition(mPlayer.getX()+1,mPlayer.getY()-1);
+
+            //影のあたり判定ではなくキャラ同士のあたり判定
+         //   if (mPlayer.getBoundingRectangle().overlaps(enemy.getBoundingRectangle())){
+             if(mShadow.getBoundingRectangle().overlaps(enemy.getBoundingRectangle())){
+
                 CatchEnemy(enemy);
                 break;
             }
