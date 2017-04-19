@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
@@ -47,7 +48,7 @@ public class GameScreen extends ScreenAdapter {
 
     static final float WORLD_WIDTH = 16;
     //    static final float WORLD_HEIGHT = 15 * 20; // 20画面分登れば終了
-    static final float WORLD_HEIGHT = 24 * 5; // TEST 5画面分登れば終了
+    static final float WORLD_HEIGHT = 24 * 2; // TEST 5画面分登れば終了
 
     static final int GAME_STATE_READY = 0;
     static final int GAME_STATE_PLAYING = 1;
@@ -56,12 +57,6 @@ public class GameScreen extends ScreenAdapter {
     static final float GUI_WIDTH = 320;
     static final float GUI_HEIGHT = 480;
 
-  //  static final float GUI_WIDTH = 320;
- //   static final float GUI_HEIGHT = 480;
-
-
-    //画面の縦の三分の一（横に移動させるために利用）
-    static final float GUI_HEIGHT3 = 160;
 
     private Kagefumase mGame;
 
@@ -115,6 +110,8 @@ public class GameScreen extends ScreenAdapter {
     public static final String LOG_TAG = GameScreen.class.getSimpleName();
 
     Music music;
+
+    MapLayer ObjectLayer;
 
 
     public GameScreen(Kagefumase game){
@@ -180,7 +177,8 @@ public class GameScreen extends ScreenAdapter {
      //   tiledMap = new TmxMapLoader().load("test.tmx"); // マップファイル読込
 
         //TODO MAPを読むときに1/10f を設定して画面の大きさを変える。まだ調整
-        tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap, 1/10f);
+        //TODO まだ調整中
+        tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap, 1/20f);
 
         createStage();
 
@@ -332,7 +330,7 @@ public class GameScreen extends ScreenAdapter {
         // TODO 初期の位置を考える( WORLD_HEIGHT /2は仮)　Playerを配置
         //Playerの初期向きは上向き
     //    mPlayer = new Player(Player.PLAYER_STATE_UPPER, playerTexture, 0, 0, 72, 72);
-        mPlayer = new Player(Player.PLAYER_STATE_UPPER, playerTexture,85,0,133,71);
+        mPlayer = new Player(Player.PLAYER_STATE_UPPER, playerTexture,85,0,48,71);
   //      mPlayer.setPosition(WORLD_WIDTH / 2 - mPlayer.getWidth() / 2, WORLD_HEIGHT /2);
         mPlayer.setPosition(WORLD_WIDTH / 2 - mPlayer.getWidth() / 2, 5.0f);
 
@@ -489,6 +487,8 @@ public class GameScreen extends ScreenAdapter {
     private void left(){
         mPlayer.mType = mPlayer.PLAYER_STATE_LEFT;
         mPlayer.setPosition(mPlayer.getX()-0.1f,mPlayer.getY());
+        //キャラの向きを左
+        mPlayer.setRegion(10,72,48,71);
         //20170404
         mCamera.position.x = mPlayer.getX();
 
@@ -496,6 +496,8 @@ public class GameScreen extends ScreenAdapter {
     private void right(){
         mPlayer.mType = mPlayer.PLAYER_STATE_RIGHT;
         mPlayer.setPosition(mPlayer.getX()+0.1f,mPlayer.getY());
+        //キャラの向きを右
+        mPlayer.setRegion(85,72,48,71);
         //20170404
         mCamera.position.x = mPlayer.getX();
 
@@ -504,6 +506,7 @@ public class GameScreen extends ScreenAdapter {
     private void upper(){
         mPlayer.mType = mPlayer.PLAYER_STATE_UPPER;
         mPlayer.setPosition(mPlayer.getX(),mPlayer.getY()+0.1f);
+        mPlayer.setRegion(85,0,48,71);
      //20170404
         mCamera.position.y = mPlayer.getY();
 
@@ -512,6 +515,7 @@ public class GameScreen extends ScreenAdapter {
     private void lower(){
         mPlayer.mType = mPlayer.PLAYER_STATE_LOWER;
         mPlayer.setPosition(mPlayer.getX(),mPlayer.getY()-0.1f);
+        mPlayer.setRegion(10,0,48,71);
         //20170404
         mCamera.position.y = mPlayer.getY();
 
@@ -612,6 +616,37 @@ public class GameScreen extends ScreenAdapter {
             mPrefs.putInteger("HIGHSCORE", mHighScore); // ←追加する
             mPrefs.flush(); // ←追加する
         } // ←追加する
+    }
+
+    // 敵の向きを設定する関数
+    private void SetEnemyDirection( Enemy enemy, Vector3 prev, Vector3 newone ){
+
+        Vector3 diff = newone.sub( prev );
+
+        // 差分が少なければ向きを変えない
+        if( diff.len() < 0.01f ) return;
+
+        // 横移動方向が縦より大きい
+        if( Math.abs( diff.x ) > Math.abs( diff.y ) )
+        {
+            if( diff.x < 0 ) {
+                // 左向き
+                enemy.setRegion(10,72,48,71);
+            }
+            else {
+                // 右向き
+                enemy.setRegion(85,72,48,71);
+            }
+        }
+        else {
+            if( diff.y < 0 ) {
+                // 下向き
+            }
+            else {
+                // 上向き
+            }
+        }
+
     }
 
 
