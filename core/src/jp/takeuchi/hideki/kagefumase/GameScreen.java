@@ -124,13 +124,6 @@ public class GameScreen extends ScreenAdapter {
   //   mBg = new Sprite( new TextureRegion(bgTexture, 0, 0, 540, 810));
   //   mBg.setPosition(0, 0);
 
-        Texture playerTexture = new Texture("Player.png");
-
-        mPlayer_up = new Sprite(playerTexture,85,0,136,71);
-        mPlayer_lower = new Sprite(playerTexture,10,0,60,71);
-        mPlayer_right = new Sprite(playerTexture,85,72,136,142);
-        mPlayer_left = new Sprite(playerTexture,10,72,60,142);
-
 
         // カメラ、ViewPortを生成、設定する
         mCamera = new OrthographicCamera();
@@ -345,7 +338,7 @@ public class GameScreen extends ScreenAdapter {
 
             if (mRandom.nextFloat() > 0.8f){
 
-                Car car = new Car(carTexture, 0, 0, 72, 72);
+                Car car = new Car(carTexture, 370, 0, 140, 333);
                 //CarはPlayerより上に配置
                 car.setPosition(x, y + Car.CAR_HEIGHT + mRandom.nextFloat() * 3 + mPlayer.getY());
                 mCars.add(car);

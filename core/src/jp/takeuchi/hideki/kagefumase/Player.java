@@ -1,6 +1,7 @@
 package jp.takeuchi.hideki.kagefumase;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 
 /**
  * Created by OWNER on 2017/02/24.
@@ -9,8 +10,8 @@ import com.badlogic.gdx.graphics.Texture;
 public class Player extends GameObject{
 
     // 横幅、高さ
-    public static final float PLAYER_WIDTH = 1.0f;
-    public static final float PLAYER_HEIGHT = 1.0f;
+    public static final float PLAYER_WIDTH = 2.0f;
+    public static final float PLAYER_HEIGHT = 2.0f;
 
     // 状態
     public static final int PLAYER_STATE_UPPER = 0;
@@ -24,6 +25,7 @@ public class Player extends GameObject{
     int mType;
 
   //  public Player(Texture texture, int srcX, int srcY, int srcWidth, int srcHeight) {
+
     public Player(int type,Texture texture, int srcX, int srcY, int srcWidth, int srcHeight) {
         super(texture, srcX, srcY, srcWidth, srcHeight);
         setSize(PLAYER_WIDTH, PLAYER_HEIGHT);

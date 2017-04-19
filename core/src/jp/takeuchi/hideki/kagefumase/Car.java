@@ -8,8 +8,8 @@ import com.badlogic.gdx.graphics.Texture;
 
 public class Car extends GameObject {
     // 横幅、高さ(いったんLesson７の星に合わせる
-    public static final float CAR_WIDTH = 0.8f;
-    public static final float CAR_HEIGHT = 0.8f;
+    public static final float CAR_WIDTH = 2.0f;
+    public static final float CAR_HEIGHT = 3.0f;
 
     // 速度
     public static final float CAR_VELOCITY = 2.0f;
