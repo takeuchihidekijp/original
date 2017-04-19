@@ -66,6 +66,11 @@ public class GameScreen extends ScreenAdapter {
     private Kagefumase mGame;
 
     Sprite mBg;
+    Sprite mPlayer_up;
+    Sprite mPlayer_lower;
+    Sprite mPlayer_right;
+    Sprite mPlayer_left;
+
     OrthographicCamera mCamera;
     OrthographicCamera mGuiCamera;
 
@@ -121,6 +126,13 @@ public class GameScreen extends ScreenAdapter {
         // TextureRegionで切り出す時の原点は左上
   //   mBg = new Sprite( new TextureRegion(bgTexture, 0, 0, 540, 810));
   //   mBg.setPosition(0, 0);
+
+        Texture playerTexture = new Texture("Player.png");
+
+        mPlayer_up = new Sprite(playerTexture,85,0,136,71);
+        mPlayer_lower = new Sprite(playerTexture,10,0,60,71);
+        mPlayer_right = new Sprite(playerTexture,85,72,136,142);
+        mPlayer_left = new Sprite(playerTexture,10,72,60,142);
 
 
         // カメラ、ViewPortを生成、設定する
@@ -267,6 +279,20 @@ public class GameScreen extends ScreenAdapter {
         //School
         mSchool.draw(mGame.batch);
 
+        //デバック用 start
+        //Cameraの位置を確認（デバック用）
+        Gdx.app.log( "CameraPos", " x: " + mCamera.position.x + " y: " + mCamera.position.y );
+
+        // タッチ位置を取得（スクリーン座標）
+        float touchX = Gdx.input.getX();
+        float touchY = Gdx.input.getY();
+
+        // Stageにあわせて論理座標に変換
+        Vector2 touchPos = new Vector2(touchX,touchY);
+
+        Gdx.app.log("ydown", " touch_cnv x:"+ touchPos.x + " y:" + touchPos.y);   // タッチ位置をデバッグ出力
+        //デバック用 end
+
         mGame.batch.end();
 
         // スコア表示
@@ -288,19 +314,25 @@ public class GameScreen extends ScreenAdapter {
     // ステージを作成する
     private void createStage(){
         // TODO Playerの画像の用意とアニメーション検討 テクスチャの準備
-        Texture playerTexture = new Texture("uma.png");
+        Texture playerTexture = new Texture("Player.png");
+
         Texture enemysTexture = new Texture("enemy.png");
         Texture schoolTexture = new Texture("school.png");
         Texture carTexture = new Texture("car.png");
 
         // TODO ここで影の初期化。影の画像は仮。
-        Texture swTexture = new Texture("shadow.png");
-        mShadow = new Shadow(swTexture,0,0,72,72);
+     //   Texture swTexture = new Texture("shadow.png");
+     //   mShadow = new Shadow(swTexture,0,0,72,72);
+
+        Texture swTexture = new Texture("shadow1.png");
+        mShadow = new Shadow(swTexture,20,30,110,90);
 
 
 
         // TODO 初期の位置を考える( WORLD_HEIGHT /2は仮)　Playerを配置
-        mPlayer = new Player(Player.PLAYER_STATE_UPPER, playerTexture, 0, 0, 72, 72);
+        //Playerの初期向きは上向き
+    //    mPlayer = new Player(Player.PLAYER_STATE_UPPER, playerTexture, 0, 0, 72, 72);
+        mPlayer = new Player(Player.PLAYER_STATE_UPPER, playerTexture,85,0,133,71);
   //      mPlayer.setPosition(WORLD_WIDTH / 2 - mPlayer.getWidth() / 2, WORLD_HEIGHT /2);
         mPlayer.setPosition(WORLD_WIDTH / 2 - mPlayer.getWidth() / 2, 5.0f);
 
@@ -431,15 +463,6 @@ public class GameScreen extends ScreenAdapter {
 
         // Player
         mPlayer.update(delta);
-
-        // タッチ位置を取得（スクリーン座標）
-        float touchX = Gdx.input.getX();
-        float touchY = Gdx.input.getY();
-
-        // Stageにあわせて論理座標に変換
-        Vector2 touchPos = new Vector2(touchX,touchY);
-
-        Gdx.app.log("ydown", " touch_cnv x:"+ touchPos.x + " y:" + touchPos.y);   // タッチ位置をデバッグ出力
 
 
         // Car
@@ -590,6 +613,7 @@ public class GameScreen extends ScreenAdapter {
             mPrefs.flush(); // ←追加する
         } // ←追加する
     }
+
 
 
 }

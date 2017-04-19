@@ -21,7 +21,10 @@ public class Kagefumase extends Game {
 		batch = new SpriteBatch();
 
 		// GameScreenを表示する
-		setScreen(new GameScreen(this));
+	//	setScreen(new GameScreen(this));
+
+		// MenuScreenを表示する
+		setScreen(new MenuScreen(this));
 	}
 
 }
