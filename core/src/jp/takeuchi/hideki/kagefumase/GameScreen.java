@@ -245,12 +245,20 @@ public class GameScreen extends ScreenAdapter {
                 // アンダーフロー防止
                 if( currentIndex < 0 ) currentIndex = 0;
 
+                // 過去の座標を保持
+                Vector2 prevPos = mEnemys.get(i).GetPosition();
+
                 // プレイヤーの過去の座標を捕まった敵に適応
                 mEnemys.get(i).setPosition( PlayerPositionLog.get(currentIndex).x,PlayerPositionLog.get(currentIndex).y );
                 mEnemys.get(i).draw(mGame.batch);
                 //ememy shadow
                 mShadow.setPosition(mEnemys.get(i).getX()+1,mEnemys.get(i).getY()-1);
                 mShadow.draw(mGame.batch);
+
+                // 新しい座標を取得
+                Vector2 newPos = mEnemys.get(i).GetPosition();
+
+                SetEnemyDirection( mEnemys.get(i), prevPos, newPos );
 
                 z++;
             }
@@ -307,7 +315,7 @@ public class GameScreen extends ScreenAdapter {
         // TODO Playerの画像の用意とアニメーション検討 テクスチャの準備
         Texture playerTexture = new Texture("Player.png");
 
-        Texture enemysTexture = new Texture("enemy.png");
+        Texture enemysTexture = new Texture("Enemy1.png");
         Texture schoolTexture = new Texture("school.png");
         Texture carTexture = new Texture("car.png");
 
@@ -343,7 +351,7 @@ public class GameScreen extends ScreenAdapter {
                 car.setPosition(x, y + Car.CAR_HEIGHT + mRandom.nextFloat() * 3 + mPlayer.getY());
                 mCars.add(car);
 
-                Enemy enemy = new Enemy(Enemy.ENEMY_MOVING_TYPE_NORMAL,enemysTexture, 0, 0, 120, 74);
+                Enemy enemy = new Enemy(Enemy.ENEMY_MOVING_TYPE_NORMAL,enemysTexture, 85,0,48,71);
                 //敵はPlayerより上に配置
                 enemy.setPosition(x, y + mPlayer.getY());
                 mEnemys.add(enemy);
@@ -612,9 +620,9 @@ public class GameScreen extends ScreenAdapter {
     }
 
     // 敵の向きを設定する関数
-    private void SetEnemyDirection( Enemy enemy, Vector3 prev, Vector3 newone ){
+    private void SetEnemyDirection( Enemy enemy, Vector2 prev, Vector2 newone ){
 
-        Vector3 diff = newone.sub( prev );
+        Vector2 diff = newone.sub( prev );
 
         // 差分が少なければ向きを変えない
         if( diff.len() < 0.01f ) return;
@@ -634,9 +642,11 @@ public class GameScreen extends ScreenAdapter {
         else {
             if( diff.y < 0 ) {
                 // 下向き
+                enemy.setRegion(10,0,48,71);
             }
             else {
                 // 上向き
+                enemy.setRegion(85,0,48,71);
             }
         }
 
