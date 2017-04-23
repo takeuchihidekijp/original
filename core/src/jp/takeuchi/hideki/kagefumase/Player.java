@@ -10,8 +10,8 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 public class Player extends GameObject{
 
     // 横幅、高さ
-    public static final float PLAYER_WIDTH = 2.0f;
-    public static final float PLAYER_HEIGHT = 2.0f;
+    public static final float PLAYER_WIDTH = 1.0f;
+    public static final float PLAYER_HEIGHT = 1.0f;
 
     // 状態
     public static final int PLAYER_STATE_UPPER = 0;

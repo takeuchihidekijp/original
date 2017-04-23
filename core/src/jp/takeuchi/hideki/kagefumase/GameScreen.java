@@ -315,7 +315,7 @@ public class GameScreen extends ScreenAdapter {
         // TODO Playerの画像の用意とアニメーション検討 テクスチャの準備
         Texture playerTexture = new Texture("Player.png");
 
-        Texture enemysTexture = new Texture("Enemy1.png");
+        Texture enemysTexture = new Texture("enemy.png");
         Texture schoolTexture = new Texture("school.png");
         Texture carTexture = new Texture("car.png");
 
@@ -346,12 +346,12 @@ public class GameScreen extends ScreenAdapter {
 
             if (mRandom.nextFloat() > 0.8f){
 
-                Car car = new Car(carTexture, 370, 0, 140, 333);
+                Car car = new Car(carTexture, 370, 0, 140, 320);
                 //CarはPlayerより上に配置
                 car.setPosition(x, y + Car.CAR_HEIGHT + mRandom.nextFloat() * 3 + mPlayer.getY());
                 mCars.add(car);
 
-                Enemy enemy = new Enemy(Enemy.ENEMY_MOVING_TYPE_NORMAL,enemysTexture, 85,0,48,71);
+                Enemy enemy = new Enemy(Enemy.ENEMY_MOVING_TYPE_NORMAL,enemysTexture, 16,75,34,65);
                 //敵はPlayerより上に配置
                 enemy.setPosition(x, y + mPlayer.getY());
                 mEnemys.add(enemy);
@@ -431,9 +431,13 @@ public class GameScreen extends ScreenAdapter {
                     if (diff.y > 0) {
                         // 下に逃げる
                         mEnemys.get(i).mType = mEnemys.get(i).ENEMY_MOVING_TYPE_LOWER;
+                        // 下向き
+                        mEnemys.get(i).setRegion(17,5,34,65);
                     } else {
                         // 上に逃げる
                         mEnemys.get(i).mType = mEnemys.get(i).ENEMY_MOVING_TYPE_UPPER;
+                        // 上向き
+                        mEnemys.get(i).setRegion(16,75,34,65);
                     }
 
                 } else {
@@ -441,9 +445,13 @@ public class GameScreen extends ScreenAdapter {
                     if (diff.x > 0) {
                         // 左に逃げる
                         mEnemys.get(i).mType = mEnemys.get(i).ENEMY_MOVING_TYPE_LEFT;
+                        // 左向き
+                        mEnemys.get(i).setRegion(90,75,34,65);
                     } else {
                         // 右に逃げる
                         mEnemys.get(i).mType = mEnemys.get(i).ENEMY_MOVING_TYPE_RIGHT;
+                        // 右向き
+                        mEnemys.get(i).setRegion(90,5,34,65);
                     }
 
                 }
@@ -632,21 +640,21 @@ public class GameScreen extends ScreenAdapter {
         {
             if( diff.x < 0 ) {
                 // 左向き
-                enemy.setRegion(10,72,48,71);
+                enemy.setRegion(90,75,34,65);
             }
             else {
                 // 右向き
-                enemy.setRegion(85,72,48,71);
+                enemy.setRegion(90,5,34,65);
             }
         }
         else {
             if( diff.y < 0 ) {
                 // 下向き
-                enemy.setRegion(10,0,48,71);
+                enemy.setRegion(17,5,34,65);
             }
             else {
                 // 上向き
-                enemy.setRegion(85,0,48,71);
+                enemy.setRegion(16,75,34,65);
             }
         }
 
