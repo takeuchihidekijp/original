@@ -8,8 +8,8 @@ import com.badlogic.gdx.graphics.Texture;
 
 public class School extends GameObject {
     // 横幅、高さ
-    public static final float SCHOOL_WIDTH = 2.0f;
-    public static final float SCHOOL_HEIGHT = 1.3f;
+    public static final float SCHOOL_WIDTH = 3.0f;
+    public static final float SCHOOL_HEIGHT = 3.0f;
 
     public School(Texture texture, int srcX, int srcY, int srcWidth, int srcHeight) {
         super(texture, srcX, srcY, srcWidth, srcHeight);

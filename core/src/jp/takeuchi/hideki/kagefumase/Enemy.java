@@ -14,8 +14,8 @@ public class Enemy extends GameObject{
     public GameScreen gameScreen;
 
     // 横幅、高さ
-    public static final float ENEMY_WIDTH = 1.0f;
-    public static final float ENEMY_HEIGHT = 1.0f;
+    public static final float ENEMY_WIDTH = 1.5f;
+    public static final float ENEMY_HEIGHT = 1.5f;
 
     //状態（逃げているのと捕まった状態)
      public static final int ENEMY_TYPE_MOVING = 0;

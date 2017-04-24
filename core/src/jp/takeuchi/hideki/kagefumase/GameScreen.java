@@ -171,7 +171,7 @@ public class GameScreen extends ScreenAdapter {
 
         //TODO MAPを読むときに1/10f を設定して画面の大きさを変える。まだ調整
         //TODO まだ調整中
-        tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap, 1/20f);
+        tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap, 1/10f);
 
         createStage();
 
@@ -316,6 +316,8 @@ public class GameScreen extends ScreenAdapter {
         Texture playerTexture = new Texture("Player.png");
 
         Texture enemysTexture = new Texture("enemy.png");
+
+        //学校のイラストはここから。http://illustcut.com/
         Texture schoolTexture = new Texture("school.png");
         Texture carTexture = new Texture("car.png");
 
@@ -346,7 +348,7 @@ public class GameScreen extends ScreenAdapter {
 
             if (mRandom.nextFloat() > 0.8f){
 
-                Car car = new Car(carTexture, 370, 0, 140, 320);
+                Car car = new Car(carTexture, 370, 0, 130, 330);
                 //CarはPlayerより上に配置
                 car.setPosition(x, y + Car.CAR_HEIGHT + mRandom.nextFloat() * 3 + mPlayer.getY());
                 mCars.add(car);
@@ -361,8 +363,9 @@ public class GameScreen extends ScreenAdapter {
         }
 
         // ゴールの配置
-        mSchool = new School(schoolTexture, 0, 0, 120, 74);
-        mSchool.setPosition(WORLD_WIDTH / 2 - School.SCHOOL_WIDTH / 2, y);
+        mSchool = new School(schoolTexture, 0, 0, 512, 255);
+    //    mSchool.setPosition(WORLD_WIDTH / 2 - School.SCHOOL_WIDTH / 2, y);
+        mSchool.setPosition(WORLD_WIDTH - School.SCHOOL_WIDTH / 2 , y);
 
     }
 
