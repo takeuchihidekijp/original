@@ -116,6 +116,9 @@ public class GameScreen extends ScreenAdapter {
     float timeLimit = Gdx.graphics.getDeltaTime(); //タイムリミット
     float totalTime = 5 * 60; //タイムリミットを定義（５分）
 
+    float carCreateTime = 0.0f;
+    float carCreateSpan = 3.0f;
+
 
     public GameScreen(Kagefumase game){
         mGame = game;
@@ -191,6 +194,18 @@ public class GameScreen extends ScreenAdapter {
         //Timer を減らす。
         totalTime -= timeLimit;
 
+        carCreateTime -= delta;
+        if (carCreateTime < 0.0f){
+            // 新しくクルマを作る
+            Texture carTexture = new Texture("car.png");
+            Car car = new Car(carTexture, 370, 0, 130, 330);
+            //TODO Carの追加表示位置を検討
+            car.setPosition(32, 48);
+            mCars.add(car);
+
+            carCreateTime = carCreateSpan;
+        }
+
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
@@ -199,6 +214,10 @@ public class GameScreen extends ScreenAdapter {
    //     if (mPlayer.getY() > mCamera.position.y) {
    //         mCamera.position.y = mPlayer.getY();
    //     }
+
+        //playerの動きにカメラを追随させる
+        mCamera.position.x = mPlayer.getX();
+        mCamera.position.y = mPlayer.getY();
 
         // カメラの座標をアップデート（計算）し、スプライトの表示に反映させる
         mCamera.update();
@@ -287,16 +306,16 @@ public class GameScreen extends ScreenAdapter {
 
         //デバック用 start
         //Cameraの位置を確認（デバック用）
-        Gdx.app.log( "CameraPos", " x: " + mCamera.position.x + " y: " + mCamera.position.y );
+     //   Gdx.app.log( "CameraPos", " x: " + mCamera.position.x + " y: " + mCamera.position.y );
 
         // タッチ位置を取得（スクリーン座標）
-        float touchX = Gdx.input.getX();
-        float touchY = Gdx.input.getY();
+     //   float touchX = Gdx.input.getX();
+     //   float touchY = Gdx.input.getY();
 
         // Stageにあわせて論理座標に変換
-        Vector2 touchPos = new Vector2(touchX,touchY);
+     //   Vector2 touchPos = new Vector2(touchX,touchY);
 
-        Gdx.app.log("ydown", " touch_cnv x:"+ touchPos.x + " y:" + touchPos.y);   // タッチ位置をデバッグ出力
+     //   Gdx.app.log("ydown", " touch_cnv x:"+ touchPos.x + " y:" + touchPos.y);   // タッチ位置をデバッグ出力
         //デバック用 end
 
         mGame.batch.end();
@@ -329,9 +348,7 @@ public class GameScreen extends ScreenAdapter {
         Texture schoolTexture = new Texture("school.png");
         Texture carTexture = new Texture("car.png");
 
-        // TODO ここで影の初期化。影の画像は仮。
-     //   Texture swTexture = new Texture("shadow.png");
-     //   mShadow = new Shadow(swTexture,0,0,72,72);
+        //  ここで影の初期化。
 
         Texture swTexture = new Texture("shadow1.png");
         mShadow = new Shadow(swTexture,20,30,110,90);
@@ -348,6 +365,7 @@ public class GameScreen extends ScreenAdapter {
 
         // プレイヤーの初期座標を追加
         PlayerPositionLog.add( new Vector3( mPlayer.getX(), mPlayer.getY(), 0 ) );
+
 
         // TODO Enemyをゴールの高さまで配置していく(配置ロジック検討)
         float y = 0;
@@ -509,8 +527,13 @@ public class GameScreen extends ScreenAdapter {
         mPlayer.setPosition(mPlayer.getX()-0.1f,mPlayer.getY());
         //キャラの向きを左
         mPlayer.setRegion(10,72,48,71);
-        //20170404
-        mCamera.position.x = mPlayer.getX();
+        //20170426 render()で対応するので削除
+     //   mCamera.position.x = mPlayer.getX();
+
+        //ある位置から左にいかない
+        if (mPlayer.getX() < -1){
+            mPlayer.setX(-1);
+        }
 
     }
     private void right(){
@@ -518,8 +541,13 @@ public class GameScreen extends ScreenAdapter {
         mPlayer.setPosition(mPlayer.getX()+0.1f,mPlayer.getY());
         //キャラの向きを右
         mPlayer.setRegion(85,72,48,71);
-        //20170404
-        mCamera.position.x = mPlayer.getX();
+        //20170426 render()で対応するので削除
+     //   mCamera.position.x = mPlayer.getX();
+
+        //ある位置から右にいかない
+        if (mPlayer.getX() > 30){
+            mPlayer.setX(30);
+        }
 
     }
 
@@ -527,8 +555,13 @@ public class GameScreen extends ScreenAdapter {
         mPlayer.mType = mPlayer.PLAYER_STATE_UPPER;
         mPlayer.setPosition(mPlayer.getX(),mPlayer.getY()+0.1f);
         mPlayer.setRegion(85,0,48,71);
-     //20170404
-        mCamera.position.y = mPlayer.getY();
+        //20170426 render()で対応するので削除
+     //   mCamera.position.y = mPlayer.getY();
+
+        //ある位置から上にいかない
+        if (mPlayer.getY() > 45){
+            mPlayer.setY(45);
+        }
 
     }
 
@@ -536,8 +569,13 @@ public class GameScreen extends ScreenAdapter {
         mPlayer.mType = mPlayer.PLAYER_STATE_LOWER;
         mPlayer.setPosition(mPlayer.getX(),mPlayer.getY()-0.1f);
         mPlayer.setRegion(10,0,48,71);
-        //20170404
-        mCamera.position.y = mPlayer.getY();
+        //20170426 render()で対応するので削除
+     //   mCamera.position.y = mPlayer.getY();
+
+        //ある位置から上にいかない
+        if (mPlayer.getY() < -1){
+            mPlayer.setY(-1);
+        }
 
     }
 
