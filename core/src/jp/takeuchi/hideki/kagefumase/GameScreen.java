@@ -113,6 +113,9 @@ public class GameScreen extends ScreenAdapter {
 
     MapLayer ObjectLayer;
 
+    float timeLimit = Gdx.graphics.getDeltaTime(); //タイムリミット
+    float totalTime = 5 * 60; //タイムリミットを定義（５分）
+
 
     public GameScreen(Kagefumase game){
         mGame = game;
@@ -166,7 +169,8 @@ public class GameScreen extends ScreenAdapter {
         mPrefs = Gdx.app.getPreferences("jp.techacademy.hideki.takeuchi.kagefumase"); // ←追加する
         mHighScore = mPrefs.getInteger("HIGHSCORE", 0); // ←追加する
 
-        tiledMap = new TmxMapLoader().load("map_ori.tmx"); // マップファイル読込
+        tiledMap = new TmxMapLoader().load("map_ori1.tmx"); // マップファイル読込
+     //   tiledMap = new TmxMapLoader().load("map_ori.tmx"); // マップファイル読込
      //   tiledMap = new TmxMapLoader().load("test.tmx"); // マップファイル読込
 
         //TODO MAPを読むときに1/10f を設定して画面の大きさを変える。まだ調整
@@ -183,6 +187,9 @@ public class GameScreen extends ScreenAdapter {
 
         // 状態を更新する
         update(delta);
+
+        //Timer を減らす。
+        totalTime -= timeLimit;
 
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -300,6 +307,7 @@ public class GameScreen extends ScreenAdapter {
         mGame.batch.begin(); // ←追加する
         mFont.draw(mGame.batch, "HighScore: " + mHighScore, 16, GUI_HEIGHT - 15); // ←追加する
         mFont.draw(mGame.batch, "Score: " + mScore, 16, GUI_HEIGHT - 35); // ←追加する
+        mFont.draw(mGame.batch, "Time:" + totalTime,16, GUI_HEIGHT - 55); //
         mGame.batch.end(); // ←追加する
 
     }

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="40" height="60" tilewidth="8" tileheight="8" nextobjectid="16">
+ <tileset firstgid="1" name="road" tilewidth="8" tileheight="8" tilecount="648" columns="24">
+  <image source="sewer_tileset.png" width="192" height="217"/>
+ </tileset>
+ <tileset firstgid="649" name="building" tilewidth="8" tileheight="8" tilecount="792" columns="33">
+  <image source="tmw_desert_spacing.png" width="265" height="199"/>
+ </tileset>
+ <layer name="tiles" width="40" height="60">
+  <data encoding="base64" compression="zlib">
+   eJzNWUtSFEEQ7R6ahWKEATdQPAGuEG4wuFDcumKljHMBVipbZ9Yqfo6hG5Qb6FLQQL0B4MqV2dHzguTNy66aiYmQxYvOrq7qfF2V9SonZ3GuKJYMXzpF8dWwYvbtEZYuARZH1xPjdmo4I47/G+C3UBbFFcPVsrGvGd5UDd4a3hneG7pFPjCW3+H9wObrCvFbtrYbhptlY98y7FcNPhk+Gw4MW0U+MJbf4f3A5ivzW7O2VcOdsrHXDcdVg5+GX4bfhp0iHxjL7/B+YPOV+W1a2z3D/bKxHwTr+6JeY8OG4e7oXrUNDMV8UZTz59eOYW7+oh/YfGV+29b2yPC4bOxesL6ehwfau86O4s/7gc1X5vfc2p4anpWNvRusr+fXdwDP3ghPqjj+vB/YfGV+r63tpeFV2dh7o/XltfH8hg7gifUeVHH8eT+1/c3cHBqODN+L5hnzwzPfb1/pi4izIQF9ovgDH+Z1Zvgzamd+eHbq+h0H8ec58v2Pzvn6RvF3MvJzQv6gu0eCH555fa6/m9em5zh16Z7nNYo/1mL4g+6eCX545vVZxZ/SEs/PP4vij7UY/qC7C4E+r5M+q/h7OHeRw8DN4Ybbu303lr+RtRj+oLvLgT4/IH1W8bdO/P52Ls6p3zMYy9/IWgx/0N21QJ97pM8q/nj+anzstK8vfyNrMfxBdzcDfd4lfVbn24fOuEYfdvT6Yl35G1mL4Q+6ux3o8x7pc875NqzGzzc8j+IP+szngeer9Jn1Mud8w9mh5i+KP6XP3Kb0mfWyENqvzrfoTIniT+kztyl9zsqfq/Gzg9t4fXkNlD7PKn/2/tXZ4W2M5TVQ+jyr/Lnt7ABnxB/G8hoofZ5V/sz8/NnBXDFvvAZKn2edP7POoE2db7wGSp9nnT+zzqAt53xT+jxN/hzpS5tGq/jjNVD6zG05+hzFX+oMQXt0vrEfvlf6rLhw/EX5sLf9s+h8S42r75mf2gscf1E+7G3/jPvljjsQ/NR341va5ob7Ru9R/b3NMaDmL/puvEP1aZujVH9vcwwwP8+fvwXvUH24b/Qe1b/NJ/Pz/PlbME714b6qD8eA8pOaP6XPqfONcyvOrzC2rb6xK/zm6nN0vkX5Sr/S50dbfWNP+M3V51T+wvyGlc5Po/qG0ufa7s4of+5XOt/i/CWqb8AP59GK3zT5M8ffgO6j+GM/nEcrftPkzyl+UfyxH86jFb9p8mfFT+UvUX0DfjiPVvxU/pzz+433st8fUfyxH86jFT+VP+f8fmM7J/7Yj7/vBvtD6XMq/pStfp9H9Q2lzzW3LcFP6XMq/lLzF8Vfmz7X3HYEP6XPqfhTv9VVfahDMXi9bKD0eWeC+sak8der9PnLuRn4KX1GDTxHn3Piz68rfg9z/HFuBn5Kn1EDz9HnVPxxrdz/9zGksX6twU/pM2rgOfqcij/MV8/xyzl/V0f8lD6jBj6L+sagGq89q/pBVN9Q+owaeM7+TcWf4peT/6Xyq9z9G8VflFNF8TdpfjVJfdK/t46/XoJfTv0qlV/l7t/c/6dT8cfvSOVXufs3R/88v6h+xe9I5Ve5+zdH/3wNlc+P6DdyKr/KrU+26Z+fqy5x5fjjd7TlV6o+eRkBfiuXGDW/f6TxFh4=
+  </data>
+ </layer>
+ <objectgroup color="#aa0000" name="crossroad">
+  <object id="13" x="65" y="243" width="16" height="12"/>
+  <object id="14" x="196" y="239" width="23" height="18"/>
+ </objectgroup>
+ <objectgroup color="#ffff00" name="road">
+  <object id="2" x="56" y="-1" width="39" height="480"/>
+  <object id="3" x="186" y="2" width="46" height="478"/>
+  <object id="4" x="1" y="228" width="318" height="42"/>
+ </objectgroup>
+ <objectgroup color="#ff0000" name="wall">
+  <object id="6" x="2" y="17" width="15" height="460"/>
+  <object id="7" x="1" y="1" width="319" height="14"/>
+  <object id="9" x="304" y="2" width="16" height="473"/>
+  <object id="15" x="4.5" y="463" width="319" height="14"/>
+ </objectgroup>
+</map>
