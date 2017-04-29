@@ -53,6 +53,7 @@ public class GameScreen extends ScreenAdapter {
     static final int GAME_STATE_READY = 0;
     static final int GAME_STATE_PLAYING = 1;
     static final int GAME_STATE_GAMEOVER = 2;
+    static final int GAME_STATE_CLEAR = 3;
 
     static final float GUI_WIDTH = 320;
     static final float GUI_HEIGHT = 480;
@@ -60,11 +61,6 @@ public class GameScreen extends ScreenAdapter {
 
     private Kagefumase mGame;
 
-    Sprite mBg;
-    Sprite mPlayer_up;
-    Sprite mPlayer_lower;
-    Sprite mPlayer_right;
-    Sprite mPlayer_left;
 
     OrthographicCamera mCamera;
     OrthographicCamera mGuiCamera;
@@ -107,7 +103,6 @@ public class GameScreen extends ScreenAdapter {
     private TiledMap tiledMap;
     private OrthogonalTiledMapRenderer tiledMapRenderer;
 
-    public static final String LOG_TAG = GameScreen.class.getSimpleName();
 
     Music music;
 
@@ -118,6 +113,9 @@ public class GameScreen extends ScreenAdapter {
 
     float carCreateTime = 0.0f;
     float carCreateSpan = 3.0f;
+
+    //Schoolに接触した際に敵をすべて捕まえているかを判定するフラグ
+    int gameClearFLG = 0;
 
 
     public GameScreen(Kagefumase game){
@@ -197,12 +195,17 @@ public class GameScreen extends ScreenAdapter {
         carCreateTime -= delta;
         if (carCreateTime < 0.0f){
             // 新しくクルマを作る
-            Texture carTexture = new Texture("car.png");
-            Car car = new Car(carTexture, 370, 0, 130, 330);
-            //TODO Carの追加表示位置を検討
-            car.setPosition(32, 48);
-            mCars.add(car);
 
+                Texture carTexture = new Texture("car.png");
+                Car car = new Car(carTexture, 370, 0, 130, 330);
+            if (mRandom.nextFloat() > 0.6f) {
+                //TODO Carの追加表示位置を検討
+                car.setPosition(20, 48);
+                mCars.add(car);
+            }else{
+                car.setPosition(7, 48);
+                mCars.add(car);
+            }
             carCreateTime = carCreateSpan;
         }
 
@@ -376,13 +379,20 @@ public class GameScreen extends ScreenAdapter {
 
                 Car car = new Car(carTexture, 370, 0, 130, 330);
                 //CarはPlayerより上に配置
-                car.setPosition(x, y + Car.CAR_HEIGHT + mRandom.nextFloat() * 3 + mPlayer.getY());
+                car.setPosition(7, y + Car.CAR_HEIGHT + mRandom.nextFloat() * 10 + mPlayer.getY());
                 mCars.add(car);
+
 
                 Enemy enemy = new Enemy(Enemy.ENEMY_MOVING_TYPE_NORMAL,enemysTexture, 16,75,34,65);
                 //敵はPlayerより上に配置
                 enemy.setPosition(x, y + mPlayer.getY());
                 mEnemys.add(enemy);
+            }else{
+                Car car = new Car(carTexture, 370, 0, 130, 330);
+                //CarはPlayerより上に配置
+                car.setPosition(20, y + Car.CAR_HEIGHT + mRandom.nextFloat() * 10 + mPlayer.getY());
+                mCars.add(car);
+
             }
 
             y++;
@@ -392,6 +402,8 @@ public class GameScreen extends ScreenAdapter {
         mSchool = new School(schoolTexture, 0, 0, 512, 255);
     //    mSchool.setPosition(WORLD_WIDTH / 2 - School.SCHOOL_WIDTH / 2, y);
         mSchool.setPosition(WORLD_WIDTH - School.SCHOOL_WIDTH / 2 , y);
+
+        Gdx.app.log("size", " mEnemys.size():"+ mEnemys.size());
 
     }
 
@@ -406,6 +418,9 @@ public class GameScreen extends ScreenAdapter {
                 break;
             case GAME_STATE_GAMEOVER:
                 updateGameOver();
+                break;
+            case GAME_STATE_CLEAR:
+                updateGameClear();
                 break;
         }
     }
@@ -522,6 +537,14 @@ public class GameScreen extends ScreenAdapter {
 
     }
 
+    private void updateGameClear() {
+        music.dispose();
+        if (Gdx.input.justTouched()) {
+            mGame.setScreen(new GameClearScreen(mGame, mScore));
+        }
+
+    }
+
     private void left(){
         mPlayer.mType = mPlayer.PLAYER_STATE_LEFT;
         mPlayer.setPosition(mPlayer.getX()-0.1f,mPlayer.getY());
@@ -592,9 +615,14 @@ public class GameScreen extends ScreenAdapter {
 
         // SCHOOL(ゴールとの当たり判定)
         if (mPlayer.getBoundingRectangle().overlaps(mSchool.getBoundingRectangle())) {
-            mGameState = GAME_STATE_GAMEOVER;
+            if (gameClearFLG == 0) {
+                mGameState = GAME_STATE_GAMEOVER;
+            }else{
+                mGameState = GAME_STATE_CLEAR;
+            }
             return;
         }
+
 
         activeEnemies.clear();
         caughtEnemies.clear();
@@ -605,9 +633,11 @@ public class GameScreen extends ScreenAdapter {
 
             if (enemy.mState == Enemy.ENEMY_TYPE_MOVING) {
                 activeEnemies.add(enemy);
+
             } else {
                 caughtEnemies.add(enemy);
             }
+
         }
 
         for (int i = 0; i < activeEnemies.size(); i++){
@@ -628,6 +658,7 @@ public class GameScreen extends ScreenAdapter {
                     CatchEnemy( enemy1 );
 
                 }
+
             }
         }
 
@@ -653,6 +684,7 @@ public class GameScreen extends ScreenAdapter {
             //Playerの影を設定し、Playerの影と敵のあたり判定を行う。
             mShadow.setPosition(mPlayer.getX()+1,mPlayer.getY()-1);
 
+
             //影のあたり判定ではなくキャラ同士のあたり判定
          //   if (mPlayer.getBoundingRectangle().overlaps(enemy.getBoundingRectangle())){
              if(mShadow.getBoundingRectangle().overlaps(enemy.getBoundingRectangle())){
@@ -662,6 +694,10 @@ public class GameScreen extends ScreenAdapter {
             }
         }
 
+        if (activeEnemies.size() ==0){
+            //すべての敵を捕まえた
+            gameClearFLG = 1;
+        }
 
     }
 
@@ -675,6 +711,7 @@ public class GameScreen extends ScreenAdapter {
             mPrefs.flush(); // ←追加する
         } // ←追加する
     }
+
 
     // 敵の向きを設定する関数
     private void SetEnemyDirection( Enemy enemy, Vector2 prev, Vector2 newone ){

@@ -15,7 +15,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
  * Created by OWNER on 2017/03/05.
  */
 
-public class ResultScreen extends ScreenAdapter {
+public class GameClearScreen extends ScreenAdapter {
     static final float GUI_WIDTH = 320;
     static final float GUI_HEIGHT = 480;
 
@@ -27,7 +27,7 @@ public class ResultScreen extends ScreenAdapter {
 
     int mScore;
 
-    public ResultScreen(Kagefumase game, int score) {
+    public GameClearScreen(Kagefumase game, int score) {
 
         mGame = game;
         if (mGame.mRequestHandler != null) { // ←追加する
@@ -37,7 +37,7 @@ public class ResultScreen extends ScreenAdapter {
         mScore = score;
 
         // 背景の準備
-        Texture bgTexture = new Texture("GameOver.png");
+        Texture bgTexture = new Texture("StageClear.png");
         mBg = new Sprite(new TextureRegion(bgTexture, 0, 0, 540, 810));
         mBg.setSize(GUI_WIDTH, GUI_HEIGHT);
         mBg.setPosition(0, 0);

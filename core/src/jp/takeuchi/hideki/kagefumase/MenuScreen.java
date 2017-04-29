@@ -30,7 +30,7 @@ public class MenuScreen extends ScreenAdapter {
         mGame = game;
 
         // 背景の準備
-        Texture bgTexture = new Texture("resultback.png");
+        Texture bgTexture = new Texture("Title.png");
         mBg = new Sprite(new TextureRegion(bgTexture, 0, 0, 540, 810));
         mBg.setSize(GUI_WIDTH, GUI_HEIGHT);
         mBg.setPosition(0, 0);
