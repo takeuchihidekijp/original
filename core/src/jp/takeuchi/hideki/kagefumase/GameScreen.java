@@ -109,7 +109,7 @@ public class GameScreen extends ScreenAdapter {
     MapLayer ObjectLayer;
 
     float timeLimit = Gdx.graphics.getDeltaTime(); //タイムリミット
-    float totalTime = 5 * 60; //タイムリミットを定義（５分）
+    float totalTime = 1 * 60; //タイムリミットを定義（５分）
 
     float carCreateTime = 0.0f;
     float carCreateSpan = 3.0f;
@@ -192,6 +192,11 @@ public class GameScreen extends ScreenAdapter {
         //Timer を減らす。
         totalTime -= timeLimit;
 
+        if (totalTime < 0.0f){
+            mGameState = GAME_STATE_GAMEOVER;
+        }
+
+
         carCreateTime -= delta;
         if (carCreateTime < 0.0f){
             // 新しくクルマを作る
@@ -206,7 +211,9 @@ public class GameScreen extends ScreenAdapter {
                 car.setPosition(7, 48);
                 mCars.add(car);
             }
-            carCreateTime = carCreateSpan;
+            //発生間隔をランダムにする
+           // carCreateTime = carCreateSpan;
+            carCreateTime = mRandom.nextFloat() * 2.0f + 0.1f;
         }
 
         Gdx.gl.glClearColor(0, 0, 0, 1);
@@ -387,12 +394,6 @@ public class GameScreen extends ScreenAdapter {
                 //敵はPlayerより上に配置
                 enemy.setPosition(x, y + mPlayer.getY());
                 mEnemys.add(enemy);
-            }else{
-                Car car = new Car(carTexture, 370, 0, 130, 330);
-                //CarはPlayerより上に配置
-                car.setPosition(20, y + Car.CAR_HEIGHT + mRandom.nextFloat() * 10 + mPlayer.getY());
-                mCars.add(car);
-
             }
 
             y++;
@@ -466,6 +467,10 @@ public class GameScreen extends ScreenAdapter {
 
         //Enemy
         for (int i =0; i < mEnemys.size(); i++) {
+
+            if (mEnemys.get(i).mState == Enemy.ENEMY_TYPE_CAUGHT)
+                continue;
+
             if (mPlayer.GetPosition().dst(mEnemys.get(i).GetPosition()) > 2.5f) {
                 mEnemys.get(i).mType = mEnemys.get(i).ENEMY_MOVING_TYPE_NORMAL;
             } else {
@@ -656,6 +661,8 @@ public class GameScreen extends ScreenAdapter {
 
                     // 捕まってる敵と、捕まってない敵が当たった
                     CatchEnemy( enemy1 );
+                    //test
+                    break;
 
                 }
 
@@ -719,7 +726,7 @@ public class GameScreen extends ScreenAdapter {
         Vector2 diff = newone.sub( prev );
 
         // 差分が少なければ向きを変えない
-        if( diff.len() < 0.01f ) return;
+        if( diff.len() < 0.1f ) return;
 
         // 横移動方向が縦より大きい
         if( Math.abs( diff.x ) > Math.abs( diff.y ) )
